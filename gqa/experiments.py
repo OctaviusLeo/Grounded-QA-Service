@@ -92,8 +92,8 @@ def local_cost_per_1k(energy_kwh: float, questions: int, usd_per_kwh: float) -> 
 
 
 def format_usd(value: float) -> str:
-    """At least two decimal places; more when the value would otherwise round to 0.00."""
-    if value != 0 and abs(value) < 0.01:
+    """At least two decimal places; four below one dollar, so small costs keep two significant digits."""
+    if value != 0 and abs(value) < 1:
         return f"{value:.4f}"
     return f"{value:.2f}"
 
