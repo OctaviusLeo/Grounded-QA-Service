@@ -156,7 +156,7 @@ flowchart TB
   - Write `gqa/metrics.py` with `recall_at_k` and `ndcg_at_k` (delegating to Rag_Lite's IR metrics after truncation to `k`) and `bootstrap_ci` producing `BootstrapCI{point, lower, upper}` from >=1000 resamples at 95% confidence, deterministic under a fixed seed.
   - _Requirements: 3.3, 7.1, 7.6_
 
-- [ ] 2.12 Write property tests for retrieval metric ranges and bootstrap CIs
+- [x] 2.12 Write property tests for retrieval metric ranges and bootstrap CIs
   - **Property 7: Metric ranges** (retrieval subset) — Recall@K and nDCG@K lie in `[0,1]`.
   - **Property 8: Bootstrap CI brackets the point estimate** — `lower <= point <= upper`; same seed yields identical interval within 1e-6.
   - **Validates: Requirements 3.3, 7.1, 7.6, 8.4**
