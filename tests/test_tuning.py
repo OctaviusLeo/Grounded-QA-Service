@@ -24,3 +24,16 @@ def test_errors():
         balanced_accuracy([0.5], [True], 0.5)
     with pytest.raises(ValueError):
         choose_threshold([0.5], [True, False])
+
+
+def test_downstream_refusals_lower_the_needed_threshold():
+    conf = [0.9, 0.8, 0.6, 0.85, 0.5]
+    ans = [True, True, True, False, False]
+    # Retrieval alone cannot separate question 4 (an unanswerable question with high confidence).
+    alone = choose_threshold(conf, ans)
+    # The model refuses question 4 itself, so a low gate catching question 5 suffices.
+    joint = choose_threshold(conf, ans, downstream_refused=[False, False, False, True, False])
+    assert joint.balanced_accuracy == 1.0 and joint.threshold == 0.6
+    assert alone.balanced_accuracy < 1.0
+    with pytest.raises(ValueError):
+        choose_threshold(conf, ans, downstream_refused=[True])

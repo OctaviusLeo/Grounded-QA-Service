@@ -186,8 +186,9 @@ flowchart TB
   - **Property 11: Prompt delimits passages as data** — every passage text appears only in the delimiter region; anti-injection directive present in the system message.
   - **Validates: Requirements 6.1**
 
-- [ ] 3.5 Tune the refusal thresholds on the tuning split
-  - Write `scripts/tune_thresholds.py`: for each retrieval mode, compute retrieval confidence on the tuning split only and pick the threshold that maximizes balanced accuracy of "refuse unanswerable / answer answerable" (ties to the lower threshold). Write `config/thresholds.yaml` (generated, stamped). The reported Evaluation_Set is never read.
+- [x] 3.5 Tune the refusal thresholds on the tuning split
+  - Write `gqa/tuning.py` and `scripts/tune_thresholds.py`: for each retrieval mode, run the pipeline with `granite3.3:8b` and the gate open on the tuning split only, and pick the threshold that maximizes end-to-end balanced accuracy of "refuse unanswerable / answer answerable", where a question is refused if its confidence is below the threshold or the model/validator refuses it (ties to the lower threshold). Retrieval-only tuning over-refuses because it ignores the model's own refusals. The 2B configuration uses the same retrieval threshold. Write `config/thresholds.yaml` (generated, stamped). The reported Evaluation_Set is never read.
+  - The code lands here; the run needs the pipeline (3.12), so it happens in 3.14.
   - _Requirements: 4.6, 0.1_
 
 - [x] 3.6 Implement the `AnswerParser`
@@ -222,8 +223,8 @@ flowchart TB
   - **Property 3: Refusal below confidence threshold** — `confidence < threshold` ⟹ `refused`, `text == REFUSAL_TEXT`, and the model is not invoked (mock `ModelClient`).
   - **Validates: Requirements 4.4, 4.5**
 
-- [ ] 3.14 Live pipeline check
-  - `scripts/pipeline_check.py`: run 5 tuning-split questions through the real pipeline with `granite3.3:2b` and assert every returned Answer is a Refusal or cites only retrieved IDs. Output goes to `~/gqa-runs` (not a reported number).
+- [ ] 3.14 Tune the thresholds and run the live pipeline check
+  - Run `scripts/tune_thresholds.py` (background job) and commit `config/thresholds.yaml`. Then `scripts/pipeline_check.py`: run 5 tuning-split questions through the real pipeline with `granite3.3:2b` and assert every returned Answer is a Refusal or cites only retrieved IDs. Output goes to `~/gqa-runs` (not a reported number).
   - _Requirements: 4.1, 4.3, 5.3_
 
 - [ ] 3.15 M2 gate
