@@ -354,11 +354,11 @@ flowchart TB
   - Write `gqa/gate.py` + `scripts/ci_gate.py` with `BaselineFile` and `check_regression`: compare the CI-subset Faithfulness and citation precision to the Baseline_File and fail if `(baseline - subset) > threshold` in native units; fail (and report) if the Baseline_File is missing or unreadable. The regression threshold and subset size are recorded in `config/ci.yaml`.
   - _Requirements: 10.1, 10.2, 10.3, 10.5, 10.6_
 
-- [ ] 6.7 Write property test for the CI regression gate decision
+- [x] 6.7 Write property test for the CI regression gate decision
   - **Property 15: CI regression gate decision** — `failed == ((baseline - subset) > threshold)` applied independently to faithfulness and citation precision.
   - **Validates: Requirements 10.2, 10.3**
 
-- [ ] 6.8 Write unit test for missing/unreadable baseline handling
+- [x] 6.8 Write unit test for missing/unreadable baseline handling
   - Missing or unreadable Baseline_File yields a failed status with the reported cause.
   - _Requirements: 10.5_
 
