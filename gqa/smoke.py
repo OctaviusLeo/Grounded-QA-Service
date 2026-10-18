@@ -32,6 +32,8 @@ class SmokeDeps:
     gpu_report: Callable[[], str]
     http_get: Callable[[str], Any]
     make_client: Callable[[str, float], Any]
+    http_post: Callable[[str, dict], Any] = lambda path, body: {}
+    sleep: Callable[[float], None] = time.sleep
     python_version: tuple[int, int, int] = tuple(sys.version_info[:3])  # type: ignore[assignment]
 
 
@@ -61,6 +63,9 @@ def default_deps(base_url: str, api_key_env: str, seed: int) -> SmokeDeps:
     def http_get(path: str) -> Any:
         return httpx.get(root + path, timeout=10).json()
 
+    def http_post(path: str, body: dict) -> Any:
+        return httpx.post(root + path, json=body, timeout=60).json()
+
     def make_client(model: str, timeout_s: float) -> ModelClient:
         return ModelClient(base_url, model, api_key_env, timeout_s, seed, max_tokens=128)
 
@@ -68,7 +73,17 @@ def default_deps(base_url: str, api_key_env: str, seed: int) -> SmokeDeps:
         return subprocess.run(args, capture_output=True, text=True, check=False, timeout=600)
 
     return SmokeDeps(run=run, gpu_query=query_gpus, gpu_report=nvidia_smi_report,
-                     http_get=http_get, make_client=make_client)
+                     http_get=http_get, make_client=make_client, http_post=http_post)
+
+
+def unload_all(deps: SmokeDeps, wait_s: float = 30.0) -> None:
+    """Unload every resident model so the baseline reading excludes earlier models."""
+    for loaded in deps.http_get("/api/ps").get("models", []):
+        deps.http_post("/api/generate", {"model": loaded["name"], "keep_alive": 0})
+    waited = 0.0
+    while deps.http_get("/api/ps").get("models") and waited < wait_s:
+        deps.sleep(0.5)
+        waited += 0.5
 
 
 def _fail(result: SmokeResult, condition: str, cause: str) -> SmokeResult:
@@ -91,7 +106,6 @@ def run_smoke(model: str, deps: SmokeDeps, start_server: bool = True, timeout_s:
     result.docker_version = proc.stdout.strip()
 
     try:
-        result.nvidia_smi = deps.gpu_report()
         gpu0 = deps.gpu_query()[0]
     except GpuError as exc:
         return _fail(result, "nvidia-smi available", str(exc))
@@ -115,6 +129,15 @@ def run_smoke(model: str, deps: SmokeDeps, start_server: bool = True, timeout_s:
         **{k: v for k, v in (entry.get("details") or {}).items() if k in ("family", "parameter_size", "quantization_level", "format")},
     }
 
+    try:
+        unload_all(deps)
+    except (httpx.HTTPError, ValueError) as exc:
+        return _fail(result, "model server reachable", f"cannot unload resident models: {exc}")
+
+    try:
+        result.nvidia_smi = deps.gpu_report()
+    except GpuError as exc:
+        return _fail(result, "nvidia-smi available", str(exc))
     client = deps.make_client(model, timeout_s)
     sampler = GpuSampler(interval_s=0.2, query=deps.gpu_query)
     sampler.start()

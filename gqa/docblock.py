@@ -27,7 +27,11 @@ def replace_block(text: str, name: str, content: str, after_heading: str | None 
         return pattern.sub(lambda _: block, text, count=1)
     if after_heading and after_heading in text:
         start = text.index(after_heading) + len(after_heading)
-        nxt = re.search(r"^#{1,6} ", text[start:], re.M)
+        # The section ends at the next heading of the same or a higher level that is not inside
+        # another script-written block (blocks may contain their own deeper headings).
+        level = len(after_heading) - len(after_heading.lstrip("#"))
+        rest = re.sub(r"<!-- BEGIN (.+?) -->.*?<!-- END \1 -->", lambda m: " " * len(m.group(0)), text[start:], flags=re.S)
+        nxt = re.search(rf"^#{{1,{level}}} ", rest, re.M)
         cut = start + nxt.start() if nxt else len(text)
         head, tail = text[:cut].rstrip("\n"), text[cut:]
         return f"{head}\n\n{block}\n\n{tail}" if tail else f"{head}\n\n{block}\n"

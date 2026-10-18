@@ -42,6 +42,7 @@ def _deps(**over):
         http_get=http_get,
         make_client=lambda model, timeout: FakeClient(),
         python_version=(3, 12, 15),
+        sleep=lambda s: None,
     )
     values.update(over)
     return smoke.SmokeDeps(**values)
@@ -77,6 +78,7 @@ def test_smoke_reports_missing_gpu_model_and_server():
         raise GpuError("nvidia-smi not found on PATH")
 
     assert smoke.run_smoke("m", _deps(gpu_report=no_gpu)).failed_condition == "nvidia-smi available"
+    assert smoke.run_smoke("m", _deps(gpu_query=no_gpu)).failed_condition == "nvidia-smi available"
     assert smoke.run_smoke("other", _deps()).failed_condition == "model pulled"
 
     def down(path):
@@ -104,6 +106,9 @@ def test_docblock_insert_replace_and_read(tmp_path):
     assert read_block("nothing", "x") is None
     tail = replace_block(text, "s", "evidence", after_heading="## Smoke test evidence")
     assert tail.rstrip().endswith("<!-- END s -->")
+    # A second block in the same section goes after the first, even if the first has headings.
+    two = replace_block(replace_block(text, "a", "### A\nbody", after_heading="## Tools"), "b", "### B", after_heading="## Tools")
+    assert two.index("<!-- END a -->") < two.index("<!-- BEGIN b -->") < two.index("## Smoke test evidence")
     p = tmp_path / "doc.md"
     update_file(p, "k", "v")
     assert read_block(p.read_text(), "k") == "v"
@@ -115,3 +120,30 @@ def test_default_deps_wiring():
     assert client.model == "m" and client.max_tokens == 128
     client.close()
     assert d.run(["true"]).returncode == 0
+
+
+def test_unload_all_waits_until_nothing_is_resident():
+    state = {"loaded": [{"name": "big"}], "posts": [], "polls": 0}
+
+    def http_get(path):
+        state["polls"] += 1
+        if state["polls"] > 2:
+            state["loaded"] = []
+        return {"models": state["loaded"]}
+
+    d = _deps(http_get=http_get, http_post=lambda p, b: state["posts"].append((p, b)), sleep=lambda s: None)
+    smoke.unload_all(d)
+    assert state["posts"] == [("/api/generate", {"model": "big", "keep_alive": 0})]
+    assert state["loaded"] == []
+
+
+def test_unload_failure_is_reported():
+    calls = {"n": 0}
+    base = _deps().http_get
+
+    def http_get(path):
+        if path == "/api/ps":
+            raise httpx.ConnectError("down")
+        return base(path)
+
+    assert smoke.run_smoke("m", _deps(http_get=http_get)).failed_condition == "model server reachable"
