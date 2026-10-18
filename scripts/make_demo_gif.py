@@ -22,7 +22,7 @@ QUESTIONS = [
     "Who was Edward the Confessor's half-brother?",
     "Who won the 2030 FIFA World Cup?",
 ]
-W, H, PAD, LINE = 1100, 330, 18, 22
+W, H, PAD, LINE = 1180, 330, 18, 22
 BG, FG, DIM, OK, WARN = (24, 26, 33), (220, 223, 228), (130, 136, 150), (120, 200, 140), (230, 180, 90)
 MAX_WAIT_S = 1.5
 
