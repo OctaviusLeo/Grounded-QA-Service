@@ -366,7 +366,7 @@ flowchart TB
   - Commit, then run `scripts/make_baseline.py`: evaluate the CI subset with the CI configuration and write `results/baseline.json` with faithfulness, citation precision, command, seed, and the 40-char commit.
   - _Requirements: 10.6_
 
-- [ ] 6.10 Configure the GitHub Actions CI pipeline
+- [x] 6.10 Configure the GitHub Actions CI pipeline
   - Write `.github/workflows/ci.yml`: on pushes to `main` and PRs targeting it, job `unit` (GitHub-hosted) runs `bash scripts/test_unit.sh`; job `quality` (self-hosted `gpu`, needs `unit`) starts the `ollama` service, evaluates the CI subset, and runs `scripts/ci_gate.py`; the run fails if any unit test fails or the gate reports failure.
   - _Requirements: 10.1, 10.4_
 
