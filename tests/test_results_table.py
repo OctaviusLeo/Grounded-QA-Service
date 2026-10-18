@@ -49,14 +49,14 @@ def test_regenerating_is_deterministic_and_has_cis(tmp_path):
     a = rt.write_results_table(STAMP, out, results_dir=tmp_path, thresholds=th)
     b = rt.write_results_table(STAMP, out, results_dir=tmp_path, thresholds=th)
     assert a == b == out.read_text()
-    quality_rows = [line for line in a.splitlines() if line.startswith("| a |") or line.startswith("| b |") or line.startswith("| c |")]
-    assert len(quality_rows) == 6  # three healthy configurations in each of the two tables
+    quality_rows = [line for line in a.splitlines() if line.startswith(("| a |", "| b |", "| c |")) and "[0.400, 0.600]" in line]
+    assert len(quality_rows) == 6  # three healthy configurations in each of the two metric tables
     for row in quality_rows:
         assert row.count("[0.400, 0.600]") >= 6
     assert "not computed (judge failed)" in a
     assert "| d | bm25 | `m` | failed" in a and "FAILED: ModelServerError: down" in a
     assert "0.0123" in a and "| 1234 | 2346 |" in a
-    assert a.count("a" * 40) == 5  # every section carries its stamp
+    assert a.count("a" * 40) == 6  # every section carries its stamp (table, experiments, trade-offs, baseline, injection, thresholds)
     assert "0.167" in a and "not computed: owner labels pending" in a
 
 
@@ -76,3 +76,21 @@ def test_cell_formats():
     assert rt.cell(None) == "not computed (missing)"
     assert rt.cell({"not_computed": "x"}) == "not computed (x)"
     assert rt.cell(CI) == "0.500 [0.400, 0.600]"
+
+
+def test_tradeoffs_relative_to_reference(tmp_path):
+    th = _fixture(tmp_path)
+    ref = _config("hybrid_rerank_8b")
+    fast = _config("bm25_8b")
+    fast["quality"]["f1"] = {"point": 0.4, "lower": 0.3, "upper": 0.5}
+    fast["p50_latency_ms"], fast["cost_per_1k_usd"] = 617.2, 0.00615
+    _write(tmp_path / "experiments.json", {"questions": 200, "answerable": 150, "unanswerable": 50, "resamples": 1000,
+                                           "judge_model": "j", "electricity_source": "EIA", "configurations": [fast, ref]})
+    text = rt.render(STAMP, results_dir=tmp_path, thresholds=th)
+    section = text.split("## Trade-offs")[1].split("## Retrieval baseline")[0]
+    assert "| bm25_8b | -0.100 |" in section and "| 0.50x |" in section and "n/a" in section  # faithfulness not computed
+    assert "| hybrid_rerank_8b | +0.000 |" in section and "1.00x" in section
+    _write(tmp_path / "experiments.json", {"questions": 1, "answerable": 1, "unanswerable": 0, "resamples": 1000,
+                                           "judge_model": "j", "electricity_source": "EIA", "configurations": [_config("x", failed=True)]})
+    assert "every configuration failed" in rt.render(STAMP, results_dir=tmp_path, thresholds=th)
+    assert "Not computed" in rt.tradeoffs_section(tmp_path / "none.json")[2]

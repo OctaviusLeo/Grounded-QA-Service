@@ -80,6 +80,43 @@ def experiments_section(path: Path) -> list[str]:
     return lines
 
 
+REFERENCE = "hybrid_rerank_8b"
+TRADEOFF_METRICS = ("f1", "citation_precision", "refusal_accuracy", "faithfulness")
+
+
+def tradeoffs_section(path: Path) -> list[str]:
+    """Each configuration relative to the reference (differences of point estimates, ratios of latency and cost)."""
+    body, stamp, err = _load(path)
+    lines = ["## Trade-offs", ""]
+    if err:
+        return lines + [f"Not computed: {err}.", ""]
+    rows = [r for r in body["configurations"] if not r["failed"]]
+    ref = next((r for r in rows if r["config"] == REFERENCE), rows[0] if rows else None)
+    if ref is None:
+        return lines + ["Not computed: every configuration failed.", ""]
+
+    def point(r, m):
+        v = r["quality"].get(m, {})
+        return v.get("point")
+
+    def diff(r, m):
+        a, b = point(r, m), point(ref, m)
+        return "n/a" if a is None or b is None else f"{a - b:+.3f}"
+
+    def ratio(a, b):
+        return "n/a" if a is None or not b else f"{a / b:.2f}x"
+
+    lines += [stamp_markdown(stamp), "",
+              f"Relative to `{ref['config']}`: differences of point estimates (compare the CIs above before reading much into small ones) and ratios of latency and cost.", "",
+              "| Configuration | " + " | ".join(f"{QUALITY_LABELS[m]} vs ref" for m in TRADEOFF_METRICS) + " | P50 latency vs ref | P95 latency vs ref | Cost vs ref |",
+              "|" + " --- |" * (1 + len(TRADEOFF_METRICS) + 3)]
+    for r in rows:
+        lines.append(f"| {r['config']} | " + " | ".join(diff(r, m) for m in TRADEOFF_METRICS) + " | "
+                     + " | ".join([ratio(r["p50_latency_ms"], ref["p50_latency_ms"]), ratio(r["p95_latency_ms"], ref["p95_latency_ms"]),
+                                   ratio(r["cost_per_1k_usd"], ref["cost_per_1k_usd"])]) + " |")
+    return lines + [""]
+
+
 def baseline_section(path: Path) -> list[str]:
     body, stamp, err = _load(path)
     lines = ["## Retrieval baseline (Rag_Lite, answerable questions)", ""]
@@ -140,6 +177,7 @@ def render(stamp: Stamp, results_dir: str | Path = "results", thresholds: str | 
         ["# Results", "", "Generated file: do not edit. Regenerate with `python scripts/write_results_table.py`.", "",
          stamp_markdown(stamp), ""],
         experiments_section(d / "experiments.json"),
+        tradeoffs_section(d / "experiments.json"),
         baseline_section(d / "retrieval_baseline.json"),
         injection_section(d / "injection.json"),
         agreement_section(d / "judge" / "agreement.json"),
