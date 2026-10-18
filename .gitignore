@@ -1,0 +1,23 @@
+# Secrets: never tracked (Req 0.9)
+.env
+.env.*
+*.env
+secrets/
+*.key
+*.pem
+
+# Python and tooling caches
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.hypothesis/
+.coverage
+.coverage.*
+htmlcov/
+coverage.json
+*.egg-info/
+
+# Large or machine-local files live outside the repository (~/gqa-data, ~/gqa-runs)
+runs/
+.cache/

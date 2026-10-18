@@ -1,0 +1,54 @@
+[project]
+name = "grounded-qa-service"
+version = "0.1.0"
+description = "Grounded QA Service: answers only from retrieved passages, cites passage IDs, and measures itself (private portfolio project)."
+requires-python = ">=3.12,<3.13"
+# Private repository: no license field, no classifiers, never published.
+dependencies = [
+    # Rag_Lite is pinned by commit in [tool.uv.sources]; its package version at that commit is 0.1.0.
+    "rag-lite==0.1.0",
+    "torch==2.14.1",
+    "sentence-transformers==6.1.0",
+    "rank-bm25==0.2.2",
+    "scikit-learn==1.9.1",
+    "numpy==2.5.4",
+    "psutil==7.2.2",
+    "pyyaml==6.0.3",
+    "fastapi==0.143.3",
+    "uvicorn==0.54.0",
+    "pydantic==2.14.1",
+    "httpx==0.28.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest==9.1.1",
+    "pytest-cov==7.1.0",
+    "hypothesis==6.170.1",
+    "pillow==13.0.0",
+]
+
+[tool.uv]
+package = false
+python-preference = "only-managed"
+
+[tool.uv.sources]
+rag-lite = { git = "https://github.com/OctaviusLeo/rag-lite-tfidf-eval", rev = "035f182ebf71ab46db12a832917e0a02d8963cb0" }
+torch = [{ index = "pytorch-cpu" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = [
+    "model: needs the Ollama model server on the GPU",
+    "docker: needs Docker",
+    "hf: needs the downloaded Hugging Face embedder and cross-encoder",
+]
+
+[tool.coverage.run]
+source = ["gqa"]
