@@ -8,6 +8,7 @@ Every value comes from a query run on this machine; the command is recorded besi
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -95,10 +96,21 @@ def main() -> int:
         "",
         *tp_rows,
     ]), after_heading="## Model server and models")
+    uv_license = httpx.get("https://api.github.com/repos/astral-sh/uv", timeout=20).json()["license"]["spdx_id"]
+    dockerfile = Path("Dockerfile").read_text(encoding="utf-8")
+    pinned = sorted(set(re.findall(r"(?:FROM|--from=)\s*(\S+@sha256:[0-9a-f]{64})", dockerfile)))
+    image_rows = [f"| {OLLAMA_IMAGE} | `{digest.split('@')[-1]}` | {ollama_license} (bundles NVIDIA CUDA runtime libraries under NVIDIA's license) |"]
+    for ref in pinned:
+        name, sha = ref.split("@")
+        lic = (f"{uv_license} (artifact: GitHub API `repos/astral-sh/uv`); only the `uv` binary is copied into the build stage"
+               if "astral-sh/uv" in name else "Debian packages under their own free-software licenses (DFSG); see `/usr/share/doc/*/copyright` in the image")
+        image_rows.append(f"| {name} | `{sha}` | {lic} |")
     update_file(TP, "images", "\n".join([
         head, "",
         "| Image | Digest | License |", "| --- | --- | --- |",
-        f"| {OLLAMA_IMAGE} | `{digest.split('@')[-1]}` | {ollama_license} (bundles NVIDIA CUDA runtime libraries under NVIDIA's license) |",
+        *image_rows,
+        "",
+        "GitHub Actions used by `.github/workflows/ci.yml`: `actions/checkout@v4` and `astral-sh/setup-uv@v6` (MIT); they run in CI and are not part of the repository.",
     ]), after_heading="## Container images")
 
     update_file(ENV, "hosted-model", "\n".join([
