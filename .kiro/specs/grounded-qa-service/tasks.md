@@ -240,7 +240,7 @@ flowchart TB
   - **Property 7: Metric ranges** — all fractions in `[0,1]`, kappa in `[-1,1]`; identical pred/gold give EM and F1 = 1.0; identical label sequences give kappa = 1.0.
   - **Validates: Requirements 3.3, 7.1, 7.2, 7.3, 7.4, 7.5**
 
-- [ ] 4.3 Implement the `LLMJudge` faithfulness scorer
+- [x] 4.3 Implement the `LLMJudge` faithfulness scorer
   - Write `gqa/judge.py` with `LLMJudge.score_faithfulness` producing a 1/0 faithfulness label per Answer against its cited Passages (unparseable verdict => `None`, reported), and `judge_agreement` computing Cohen's kappa against owner labels over >=50 samples (fewer => "not computed").
   - _Requirements: 7.5_
 
