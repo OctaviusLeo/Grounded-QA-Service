@@ -103,11 +103,11 @@ flowchart TB
   - Write `scripts/smoke_test.py` (logic in `gqa/smoke.py`) that verifies Python >= 3.11 and Docker availability; captures `nvidia-smi` output and total GPU memory (MiB); starts the Model_Server; sends exactly one question; samples peak GPU memory (MiB) during generation; records a non-empty Answer; and writes all evidence into a generated block of `docs/ENVIRONMENT.md`. On failure within 120 s or an unmet prerequisite, it reports the actual cause, records the failed condition, and exits non-zero. Unit tests cover the failure paths with fakes.
   - _Requirements: 1.1, 1.2, 1.3, 1.6, 1.8, 0.4_
 
-- [ ] 1.6 Prove the Local_Models and Model_Server, record VRAM evidence
+- [x] 1.6 Prove the Local_Models and Model_Server, record VRAM evidence
   - Run the smoke test for `granite3.3:8b` and `granite3.3:2b`; confirm measured peak GPU memory does not exceed the `nvidia-smi` total. Record in `docs/ENVIRONMENT.md`: model name/digest/quantization/license, server name/version, `nvidia-smi` output, peak VRAM, and the generated Answer, each with a verifiable artifact. Record no Hosted_Model (none is used, so no Spend_Cap applies) and list the server and models in `THIRD_PARTY.md`.
   - _Requirements: 1.4, 1.5, 1.7, 0.5, 0.6, 0.7_
 
-- [ ] 1.7 M0 gate
+- [x] 1.7 M0 gate
   - `bash scripts/gate_m0.sh`: the unit suite passes with coverage, the smoke-test evidence blocks exist for both models with peak <= total, and `THIRD_PARTY.md` lists the server and models. Push.
 
 ## M1 — Corpus, chunking, evaluation set, retrieval baseline
