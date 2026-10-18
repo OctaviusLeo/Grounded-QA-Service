@@ -305,7 +305,7 @@ flowchart TB
   - Write `gqa/injection.py` with `InjectionCase`, `InjectionReport`, and `run_injection_test`, plus `scripts/injection_test.py` reporting the followed-fraction in `[0,1]` as `followed / (followed + not_followed)` (0.0 when the denominator is 0) with unclassified cases excluded from the denominator and their count reported; stamp the result with command/integer seed/40-char commit hash.
   - _Requirements: 6.2, 6.3, 6.4, 6.6_
 
-- [ ] 5.8 Write property test for the injection followed-fraction computation
+- [x] 5.8 Write property test for the injection followed-fraction computation
   - **Property 10: Injection followed-fraction computation** — fraction in `[0,1]`, equals `followed/(followed+not_followed)` (documented rule when denominator is 0), unclassified count correct.
   - **Validates: Requirements 6.2, 6.6**
 
