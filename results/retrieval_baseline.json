@@ -1,0 +1,165 @@
+{
+  "ks": [
+    5,
+    10,
+    20
+  ],
+  "modes": {
+    "bm25": {
+      "ndcg@10": {
+        "confidence": 0.95,
+        "lower": 0.7266543808751945,
+        "n": 150,
+        "point": 0.7824752995122887,
+        "resamples": 1000,
+        "upper": 0.8347076991602012
+      },
+      "ndcg@20": {
+        "confidence": 0.95,
+        "lower": 0.7352575414989007,
+        "n": 150,
+        "point": 0.7902660809621961,
+        "resamples": 1000,
+        "upper": 0.840935029808823
+      },
+      "ndcg@5": {
+        "confidence": 0.95,
+        "lower": 0.7115073043801222,
+        "n": 150,
+        "point": 0.7724883476506794,
+        "resamples": 1000,
+        "upper": 0.8286637003490653
+      },
+      "recall@10": {
+        "confidence": 0.95,
+        "lower": 0.8233333333333334,
+        "n": 150,
+        "point": 0.8766666666666667,
+        "resamples": 1000,
+        "upper": 0.93
+      },
+      "recall@20": {
+        "confidence": 0.95,
+        "lower": 0.8566666666666667,
+        "n": 150,
+        "point": 0.9066666666666666,
+        "resamples": 1000,
+        "upper": 0.95
+      },
+      "recall@5": {
+        "confidence": 0.95,
+        "lower": 0.7865833333333334,
+        "n": 150,
+        "point": 0.8466666666666667,
+        "resamples": 1000,
+        "upper": 0.9033333333333333
+      }
+    },
+    "hybrid": {
+      "ndcg@10": {
+        "confidence": 0.95,
+        "lower": 0.8046984067711938,
+        "n": 150,
+        "point": 0.8521026298851649,
+        "resamples": 1000,
+        "upper": 0.8944206705798852
+      },
+      "ndcg@20": {
+        "confidence": 0.95,
+        "lower": 0.8103047849785978,
+        "n": 150,
+        "point": 0.8555600136174782,
+        "resamples": 1000,
+        "upper": 0.8971733129808801
+      },
+      "ndcg@5": {
+        "confidence": 0.95,
+        "lower": 0.7846945144760478,
+        "n": 150,
+        "point": 0.8363388947917025,
+        "resamples": 1000,
+        "upper": 0.8838048143726148
+      },
+      "recall@10": {
+        "confidence": 0.95,
+        "lower": 0.9133333333333333,
+        "n": 150,
+        "point": 0.95,
+        "resamples": 1000,
+        "upper": 0.9833333333333333
+      },
+      "recall@20": {
+        "confidence": 0.95,
+        "lower": 0.93,
+        "n": 150,
+        "point": 0.9633333333333334,
+        "resamples": 1000,
+        "upper": 0.9933333333333333
+      },
+      "recall@5": {
+        "confidence": 0.95,
+        "lower": 0.8533333333333334,
+        "n": 150,
+        "point": 0.9033333333333333,
+        "resamples": 1000,
+        "upper": 0.95
+      }
+    },
+    "hybrid_rerank": {
+      "ndcg@10": {
+        "confidence": 0.95,
+        "lower": 0.9032077011750925,
+        "n": 150,
+        "point": 0.9387577102360539,
+        "resamples": 1000,
+        "upper": 0.9697654620588295
+      },
+      "ndcg@20": {
+        "confidence": 0.95,
+        "lower": 0.9032077011750925,
+        "n": 150,
+        "point": 0.9387577102360539,
+        "resamples": 1000,
+        "upper": 0.9697654620588295
+      },
+      "ndcg@5": {
+        "confidence": 0.95,
+        "lower": 0.8987809901527388,
+        "n": 150,
+        "point": 0.9365354880138316,
+        "resamples": 1000,
+        "upper": 0.9682315545798601
+      },
+      "recall@10": {
+        "confidence": 0.95,
+        "lower": 0.93,
+        "n": 150,
+        "point": 0.9633333333333334,
+        "resamples": 1000,
+        "upper": 0.9933333333333333
+      },
+      "recall@20": {
+        "confidence": 0.95,
+        "lower": 0.93,
+        "n": 150,
+        "point": 0.9633333333333334,
+        "resamples": 1000,
+        "upper": 0.9933333333333333
+      },
+      "recall@5": {
+        "confidence": 0.95,
+        "lower": 0.92,
+        "n": 150,
+        "point": 0.9566666666666667,
+        "resamples": 1000,
+        "upper": 0.9866666666666667
+      }
+    }
+  },
+  "questions": 150,
+  "stamp": {
+    "command": "python scripts/retrieval_baseline.py",
+    "commit": "e0c79dc1b51ed8a37cdfd9b08a437de791857436",
+    "seed": 1234
+  }
+}

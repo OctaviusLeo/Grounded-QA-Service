@@ -161,7 +161,7 @@ flowchart TB
   - **Property 8: Bootstrap CI brackets the point estimate** — `lower <= point <= upper`; same seed yields identical interval within 1e-6.
   - **Validates: Requirements 3.3, 7.1, 7.6, 8.4**
 
-- [ ] 2.13 Implement and run the retrieval baseline evaluation
+- [x] 2.13 Implement and run the retrieval baseline evaluation
   - Write `scripts/retrieval_baseline.py` computing Recall@K and nDCG@K for K in {5, 10, 20} with 95% bootstrap CIs over the answerable Evaluation_Set questions, for BM25, hybrid, and hybrid+rerank, writing `results/retrieval_baseline.{json,md}` stamped with command/seed/40-char commit hash.
   - _Requirements: 3.3, 0.1, 0.2_
 
