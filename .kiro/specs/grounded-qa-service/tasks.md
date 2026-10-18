@@ -244,7 +244,7 @@ flowchart TB
   - Write `gqa/judge.py` with `LLMJudge.score_faithfulness` producing a 1/0 faithfulness label per Answer against its cited Passages (unparseable verdict => `None`, reported), and `judge_agreement` computing Cohen's kappa against owner labels over >=50 samples (fewer => "not computed").
   - _Requirements: 7.5_
 
-- [ ] 4.4 Write unit tests for the judge and the kappa computation
+- [x] 4.4 Write unit tests for the judge and the kappa computation
   - Kappa over a fixed label fixture, the >=50-sample guard, verdict parsing, and a stub model.
   - _Requirements: 7.5_
 
