@@ -252,7 +252,7 @@ flowchart TB
   - Write `gqa/eval.py` (invocable as `python -m gqa.eval --config ... --seed ...`) that computes retrieval metrics, EM/F1, citation precision/recall, refusal accuracy, and judge faithfulness with 95% bootstrap CIs, is deterministic under a fixed seed, and reports each metric with its command/seed/40-char commit hash. On missing/malformed input, it reports the affected metric as "not computed" with its cause and continues. Answers are generated first, then judged, so only one model is loaded at a time.
   - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.6, 7.7, 7.8, 7.9, 0.1, 0.3_
 
-- [ ] 4.6 Write property test for determinism under fixed seed
+- [x] 4.6 Write property test for determinism under fixed seed
   - **Property 9: Determinism under fixed seed** — running the metric aggregation twice with the same seed gives floats equal within 1e-6 and exact equality for ints/categoricals.
   - **Validates: Requirements 0.3, 7.8**
 
