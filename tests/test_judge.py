@@ -9,7 +9,7 @@ ANSWER = Answer("Santa Clara [d1:0:00000001].", ("d1:0:00000001",), False)
 
 @pytest.mark.parametrize("text, label", [
     ("SUPPORTED", 1), ("supported.", 1), ("UNSUPPORTED", 0), ("The answer is Unsupported because...", 0),
-    ("Verdict: SUPPORTED", 1), ("I cannot tell", None), ("", None),
+    ("Verdict: SUPPORTED", 1), ("UNSUPPORTE", 0), ("SUPPORTE\n\nreason", 1), ("I cannot tell", None), ("", None),
 ])
 def test_parse_verdict(text, label):
     assert parse_verdict(text) == label
@@ -18,8 +18,9 @@ def test_parse_verdict(text, label):
 def test_judge_uses_cited_passages_and_delimits_data():
     model = fakes.FakeModel("SUPPORTED")
     judge = LLMJudge(model)
-    assert judge.score_faithfulness(ANSWER, [fakes.PASSAGES[1]]) == 1
+    assert judge.score_faithfulness(ANSWER, [fakes.PASSAGES[1]], "Where was it played?") == 1
     msgs = model.calls[0]
+    assert "<question>\nWhere was it played?\n</question>" in msgs.user
     assert msgs.system == JUDGE_SYSTEM
     assert fakes.TEXTS[1] in msgs.user and "<answer>\nSanta Clara" in msgs.user
     assert judge.model == "fake-model"

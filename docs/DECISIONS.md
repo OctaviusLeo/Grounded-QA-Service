@@ -1,0 +1,9 @@
+# Decisions made during the run
+
+Choices that changed something after it was first built, with the evidence that prompted them. Only the tuning split was used to evaluate each change; the reported Evaluation_Set was never used to choose anything.
+
+1. **Refusal thresholds are tuned end-to-end, not on retrieval scores alone** (task 3.5). Tuning on retrieval confidence alone chose a hybrid+rerank threshold of 0.9965, which on the tuning split would have refused 44% of answerable questions before the model saw them, because it ignored that the model can refuse unanswerable questions itself. The tuner now runs the pipeline once with the gate open and picks the threshold for "gate or downstream refusal". See `config/thresholds.yaml` (`retrieval_only_threshold_for_comparison`).
+2. **The answer prompt asks for the shortest answering phrase** (task 3.3, revised after task 4.10). The first wording ("one short sentence") produced full sentences, which made exact match against SQuAD's short gold spans near zero on the CI subset even when the answer was right. The prompt was changed once, checked on 12 tuning-split questions with both models, and the thresholds were re-tuned with the new prompt.
+3. **The prompt's example citation uses an ID that cannot exist** (`z99p999:0:0000abcd`). The first example, `a01p002:0:1a2b3c4d`, shared its document prefix with a real paragraph, and on a tuning question the 8B model cited `a01p002:0:` with an invented hash; citation validation rejected the (correct) answer.
+4. **A reply that starts with "not found in the documents" is a refusal**, even if the model adds an explanation that cites passages (seen with the 2B model on the tuning split).
+5. **The judge sees the question**, because a short answer phrase ("2003") is not a checkable claim without it, and **verdict words are matched by stem** (`UNSUPPORT…`/`SUPPORT…`), because the 8B judge sometimes stops mid-word ("UNSUPPORTE").

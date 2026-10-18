@@ -124,7 +124,7 @@ def judge_records(judge: LLMJudge, records: Iterable[Record], passages_by_id: di
     for r in records:
         if r.refused:
             continue
-        verdict = judge.judge(r.answer_obj, [passages_by_id[pid] for pid in r.cited_ids if pid in passages_by_id])
+        verdict = judge.judge(r.answer_obj, [passages_by_id[pid] for pid in r.cited_ids if pid in passages_by_id], r.question)
         r.judge_label, r.judge_raw = verdict.label, verdict.raw
 
 

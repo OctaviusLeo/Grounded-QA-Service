@@ -35,3 +35,4 @@ def test_refusal_detection():
     assert not parse_answer(f"Paris [{A}]. Other details are not found in the documents.").refused
     assert not parse_answer("").refused
     assert is_refusal("NOT FOUND IN THE DOCUMENTS!")
+    assert parse_answer(f"not found in the documents\n\n[Explanation] The passage [{A}] does not say.").refused

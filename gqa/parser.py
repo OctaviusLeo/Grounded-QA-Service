@@ -75,8 +75,9 @@ def split_sentences(text: str) -> list[str]:
 
 
 def is_refusal(text: str) -> bool:
-    core = re.sub(r"[^a-z ]", "", text.lower()).strip()
-    return core == REFUSAL_TEXT or (REFUSAL_TEXT in core and not citations_in(text))
+    """The reply starts with the refusal phrase, or contains it and cites nothing."""
+    core = " ".join(re.sub(r"[^a-z ]", " ", text.lower()).split())
+    return core.startswith(REFUSAL_TEXT) or (REFUSAL_TEXT in core and not citations_in(text))
 
 
 def parse_answer(raw: str) -> ParsedAnswer:
