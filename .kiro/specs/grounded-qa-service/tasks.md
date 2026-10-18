@@ -99,7 +99,7 @@ flowchart TB
   - Write `docker-compose.yml` (project name `gqa`) with the `ollama` service: image `ollama/ollama:0.40.6` pinned by digest, all GPUs, `OLLAMA_CONTEXT_LENGTH=8192`, `OLLAMA_MAX_LOADED_MODELS=1`, `OLLAMA_NUM_PARALLEL=1`, volume `gqa_ollama`, port `127.0.0.1:8090:11434`, and a health check. Write `scripts/pull_models.sh` that pulls `granite3.3:2b` and `granite3.3:8b` and records their digests.
   - _Requirements: 1.2, 9.7_
 
-- [ ] 1.5 Implement the environment + model smoke-test script
+- [x] 1.5 Implement the environment + model smoke-test script
   - Write `scripts/smoke_test.py` (logic in `gqa/smoke.py`) that verifies Python >= 3.11 and Docker availability; captures `nvidia-smi` output and total GPU memory (MiB); starts the Model_Server; sends exactly one question; samples peak GPU memory (MiB) during generation; records a non-empty Answer; and writes all evidence into a generated block of `docs/ENVIRONMENT.md`. On failure within 120 s or an unmet prerequisite, it reports the actual cause, records the failed condition, and exits non-zero. Unit tests cover the failure paths with fakes.
   - _Requirements: 1.1, 1.2, 1.3, 1.6, 1.8, 0.4_
 
