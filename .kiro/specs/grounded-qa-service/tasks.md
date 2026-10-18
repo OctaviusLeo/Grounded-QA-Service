@@ -277,7 +277,7 @@ flowchart TB
 
 ## M4 — Configuration experiments, Results_Table, injection test
 
-- [ ] 5.1 Implement the experiments runner and latency/cost measurement
+- [x] 5.1 Implement the experiments runner and latency/cost measurement
   - Write `gqa/experiments.py` with `Configuration`, `ConfigResult`, and `run_experiments` over the 4 Configurations in `config/experiments.yaml` (`bm25` + 8B; `hybrid` + 8B; `hybrid_rerank` + 2B; `hybrid_rerank` + 8B), measuring quality + retrieval metrics (with CIs), P50/P95 latency (ms, pipeline only), and cost per 1,000 questions (USD, >=2 decimals). Local cost = measured GPU energy × the recorded residential electricity price; hosted cost (unused) = token counts × recorded per-token prices. A failed Configuration is marked with its cause and the rest continue.
   - _Requirements: 8.1, 8.2, 8.5, 8.6_
 

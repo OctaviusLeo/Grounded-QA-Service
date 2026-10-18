@@ -1,0 +1,22 @@
+# Configuration experiments (Req 8.1). Frozen once the reported run starts.
+# Ordered so the three 8B configurations run back to back (one model swap for the 2B run, one for the judge).
+questions: data/evalset.jsonl
+judge_model: granite3.3:8b
+configurations:
+  - {name: bm25_8b, mode: bm25, model: granite3.3:8b}
+  - {name: hybrid_8b, mode: hybrid, model: granite3.3:8b}
+  - {name: hybrid_rerank_8b, mode: hybrid_rerank, model: granite3.3:8b}
+  - {name: hybrid_rerank_2b, mode: hybrid_rerank, model: granite3.3:2b}
+
+cost:
+  # Local models: cost = measured GPU board energy while answering x this price.
+  electricity_usd_per_kwh: 0.1755
+  electricity_source: >-
+    U.S. EIA, Electric Power Monthly Table 5.6.A, Virginia residential average price,
+    17.55 cents/kWh for July 2026 (preliminary; released 2026-09-24),
+    https://www.eia.gov/electricity/monthly/epm_table_grapher.php?t=epmt_5_6_a, read 2026-10-17.
+  energy_scope: GPU board power from nvidia-smi only; CPU, RAM, and the rest of the PC are not measured.
+
+# Hosted models (none configured). A hosted configuration needs prices in USD per 1M tokens:
+#   <model>: {input_usd_per_mtok: <number>, output_usd_per_mtok: <number>}
+hosted_prices: {}
