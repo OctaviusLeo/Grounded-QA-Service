@@ -256,7 +256,7 @@ flowchart TB
   - **Property 9: Determinism under fixed seed** — running the metric aggregation twice with the same seed gives floats equal within 1e-6 and exact equality for ints/categoricals.
   - **Validates: Requirements 0.3, 7.8**
 
-- [ ] 4.7 Write unit tests for harness resilience and single-command invocation
+- [x] 4.7 Write unit tests for harness resilience and single-command invocation
   - Malformed-input "not computed" path, and that the harness runs non-interactively from one command with stub components.
   - _Requirements: 7.7, 7.9_
 
