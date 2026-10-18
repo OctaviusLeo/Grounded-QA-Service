@@ -1,0 +1,18 @@
+{
+  "citation_precision": 0.6973684210526315,
+  "faithfulness": 0.7272727272727273,
+  "generating_command": "python -m gqa.eval --config config/default.yaml --mode hybrid_rerank --model granite3.3:2b --judge-model granite3.3:8b --subset ci --out results/eval/baseline_source.json",
+  "judge_model": "granite3.3:8b",
+  "mode": "hybrid_rerank",
+  "model": "granite3.3:2b",
+  "source": "results/eval/baseline_source.json",
+  "stamp": {
+    "command": "python scripts/make_baseline.py",
+    "commit": "b7763ea3c15ecdb4d3f1e09fdf2ab66a2eeb9968",
+    "seed": 1234
+  },
+  "subset": {
+    "answerable": 24,
+    "unanswerable": 6
+  }
+}

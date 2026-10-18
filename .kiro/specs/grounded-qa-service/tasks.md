@@ -362,7 +362,7 @@ flowchart TB
   - Missing or unreadable Baseline_File yields a failed status with the reported cause.
   - _Requirements: 10.5_
 
-- [ ] 6.9 Create the Baseline_File
+- [x] 6.9 Create the Baseline_File
   - Commit, then run `scripts/make_baseline.py`: evaluate the CI subset with the CI configuration and write `results/baseline.json` with faithfulness, citation precision, command, seed, and the 40-char commit.
   - _Requirements: 10.6_
 
