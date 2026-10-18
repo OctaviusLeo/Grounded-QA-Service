@@ -1,0 +1,36 @@
+generated_by: scripts/tune_thresholds.py (do not edit by hand)
+tuning_split: data/tuning.jsonl
+questions: 100
+tuning_model: granite3.3:8b
+rule: refuse when retrieval confidence < threshold; threshold maximizes end-to-end balanced accuracy (gate or downstream refusal)
+  on the tuning split, ties to the lower value
+thresholds:
+  bm25: 0.0
+  hybrid: 0.524385
+  hybrid_rerank: 0.936059
+tuning_split_scores:
+  bm25:
+    balanced_accuracy: 0.530952
+    unanswerable_refused: 0.233333
+    answerable_answered: 0.828571
+    model_alone_refused_unanswerable: 0.233333
+    model_alone_answered_answerable: 0.828571
+    retrieval_only_threshold_for_comparison: 0.0
+  hybrid:
+    balanced_accuracy: 0.592857
+    unanswerable_refused: 0.5
+    answerable_answered: 0.685714
+    model_alone_refused_unanswerable: 0.1
+    model_alone_answered_answerable: 0.914286
+    retrieval_only_threshold_for_comparison: 0.43518
+  hybrid_rerank:
+    balanced_accuracy: 0.669048
+    unanswerable_refused: 0.566667
+    answerable_answered: 0.771429
+    model_alone_refused_unanswerable: 0.2
+    model_alone_answered_answerable: 0.971429
+    retrieval_only_threshold_for_comparison: 0.996513
+stamp:
+  command: python scripts/tune_thresholds.py
+  seed: 1234
+  commit: d894c4ab861785068d62d922830bde70d6195040
