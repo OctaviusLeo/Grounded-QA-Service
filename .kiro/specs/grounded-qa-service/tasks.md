@@ -73,7 +73,7 @@ flowchart TB
   - Write `gqa/repro.py`: 40-character commit hash via `git rev-parse HEAD`, `require_clean_tree()` (generated paths excluded), a `Stamp{command, seed, commit}` struct, and a serializer/markdown renderer used by every result-emitting script.
   - _Requirements: 0.1, 0.2, 0.4_
 
-- [ ] 0.3 Write unit tests for the reproducibility helper
+- [x] 0.3 Write unit tests for the reproducibility helper
   - Assert the commit hash is 40 hex chars, the stamp round-trips through serialization, and the clean-tree check ignores generated paths but flags source edits (throwaway repository in a temp dir).
   - _Requirements: 0.1_
 
