@@ -7,3 +7,11 @@ subset:
 mode: hybrid_rerank
 model: granite3.3:2b
 judge_model: granite3.3:8b
+
+# Regression gate (Req 10.3, 10.6): the build fails if a metric on the CI subset falls more than
+# this far (absolute, in the metric's own 0-1 units) below results/baseline.json.
+# Two CI-subset runs of the same commit gave identical values (results/eval/determinism.json),
+# so this margin is not spent on noise; with about 20 judged answers, 0.10 is two answers.
+regression_threshold:
+  faithfulness: 0.10
+  citation_precision: 0.10

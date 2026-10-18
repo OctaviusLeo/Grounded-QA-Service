@@ -350,7 +350,7 @@ flowchart TB
   - `scripts/compose_check.sh` starts the stack detached, polls `/health` until it accepts, sends one `/answer` request, and leaves the `ollama` service running. Marked `docker`.
   - _Requirements: 9.7_
 
-- [ ] 6.6 Implement the CI regression gate script
+- [x] 6.6 Implement the CI regression gate script
   - Write `gqa/gate.py` + `scripts/ci_gate.py` with `BaselineFile` and `check_regression`: compare the CI-subset Faithfulness and citation precision to the Baseline_File and fail if `(baseline - subset) > threshold` in native units; fail (and report) if the Baseline_File is missing or unreadable. The regression threshold and subset size are recorded in `config/ci.yaml`.
   - _Requirements: 10.1, 10.2, 10.3, 10.5, 10.6_
 
