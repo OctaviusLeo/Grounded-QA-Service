@@ -325,7 +325,7 @@ flowchart TB
   - Run `scripts/make_label_packet.py`, then `scripts/write_results_table.py`.
   - _Requirements: 7.5, 8.3_
 
-- [ ] 5.13 M4 gate
+- [x] 5.13 M4 gate
   - `bash scripts/gate_m4.sh`: `results/summary.md` has 4 configuration rows with CIs, a retrieval-baseline section, an injection section, and a judge-agreement section (value or "not computed: owner labels pending"); the label packet exists. Push.
 
 ## M5 — Service, orchestration, CI gate, README
