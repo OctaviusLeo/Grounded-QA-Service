@@ -289,7 +289,7 @@ flowchart TB
   - **Property 13: Hosted cost computed from the defining formula** — `cost_per_1k == formula(counts, prices)` within 1e-6, >=2 decimals preserved.
   - **Validates: Requirements 8.5**
 
-- [ ] 5.4 Write unit test for failed-configuration resilience
+- [x] 5.4 Write unit test for failed-configuration resilience
   - A failing Configuration is reported with its cause while others still produce results.
   - _Requirements: 8.6_
 
