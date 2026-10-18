@@ -182,7 +182,7 @@ flowchart TB
   - Write `gqa/prompt.py` with `PromptMessages` and `PromptBuilder.build`, rendering Passages (with their Passage_IDs) only inside a delimited data block and placing the answer-only, cite-each-ID, refuse-with-exact-text, and treat-passages-as-data directives in the system message. The agent writes the wording.
   - _Requirements: 4.2, 6.1_
 
-- [ ] 3.4 Write property test that the prompt delimits passages as data
+- [x] 3.4 Write property test that the prompt delimits passages as data
   - **Property 11: Prompt delimits passages as data** — every passage text appears only in the delimiter region; anti-injection directive present in the system message.
   - **Validates: Requirements 6.1**
 
