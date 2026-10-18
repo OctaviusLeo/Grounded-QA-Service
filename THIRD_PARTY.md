@@ -75,6 +75,19 @@ Artifact: `uv pip list --format json` in `~/.venvs/gqa` (licenses from each inst
 
 ## Reused library: Rag_Lite
 
+- **Reuse mode: pinned-version package install** (Req 3.5). `rag-lite` version `0.1.0` from https://github.com/OctaviusLeo/rag-lite-tfidf-eval at commit `035f182ebf71ab46db12a832917e0a02d8963cb0`, declared in `pyproject.toml` (`rag-lite==0.1.0` with the commit pinned in `[tool.uv.sources]`) and locked in `uv.lock`. No Rag_Lite module is copied into this repository.
+- License: **MIT** (Copyright (c) 2025 Symaedchit Octavius Leo; `LICENSE` at that commit).
+- Used from Rag_Lite (imported as `src`): `src.rag.chunk_text` (window splitting, `gqa/ingest.py`), `src.rag.build_index` and `src.rag.retrieve_hybrid` (TF-IDF, BM25, dense embeddings, hybrid fusion, cross-encoder reranking, `gqa/retrieval.py`), and `src.evaluate.calculate_recall_at_k` (`gqa/metrics.py`).
+
+## Hugging Face models loaded by Rag_Lite
+
+| Model | Pinned revision | License | Use |
+| --- | --- | --- | --- |
+| `sentence-transformers/all-MiniLM-L6-v2` | `1110a243fdf4706b3f48f1d95db1a4f5529b4d41` | Apache-2.0 | dense embeddings (hybrid modes) |
+| `cross-encoder/ms-marco-MiniLM-L-6-v2` | `233902d25c440f23af6f7d6e94d2946bac0bee0a` | Apache-2.0 | cross-encoder reranking |
+
+Revisions are pinned in `gqa/hf_models.py`, fetched by `scripts/fetch_hf_models.py`, and checked before every index build; scripts run with `HF_HUB_OFFLINE=1`. Weights live in `~/.cache/huggingface` and are not committed. Licenses: the `license` field of each model card (`GET https://huggingface.co/api/models/<repo>`, checked 2026-10-17).
+
 ## Model server and models
 
 <!-- BEGIN model-server -->

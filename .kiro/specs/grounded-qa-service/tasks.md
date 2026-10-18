@@ -140,7 +140,7 @@ flowchart TB
   - Write `scripts/build_evalset.py`: with a fixed seed, sample a reported Evaluation_Set of 200 questions (150 answerable, 50 unanswerable) and a disjoint tuning split of 100 questions (70 answerable, 30 unanswerable). Gold Passage_IDs are the passages whose span contains the gold answer offset. Write `data/evalset.jsonl`, `data/tuning.jsonl`, and a stamped manifest; run the validator from 2.5; record the dataset and license in `THIRD_PARTY.md`.
   - _Requirements: 2.3, 2.4, 2.5, 2.6, 0.8_
 
-- [ ] 2.8 Implement the `RagLiteRetriever` adapter over Rag_Lite
+- [x] 2.8 Implement the `RagLiteRetriever` adapter over Rag_Lite
   - Write `gqa/retrieval.py` with `RetrievedPassage`, `RetrievalMode`, a backend that calls Rag_Lite's `build_index` and `retrieve_hybrid` (BM25 / hybrid / hybrid+rerank), and `RagLiteRetriever.retrieve` returning descending-score, de-duplicated results; results sharing no word with the query are dropped, so a no-match query returns `[]` without raising. Pin the Hugging Face model revisions Rag_Lite loads. Record the reuse mode and license in `THIRD_PARTY.md`.
   - _Requirements: 3.1, 3.2, 3.4, 3.5, 3.6_
 
