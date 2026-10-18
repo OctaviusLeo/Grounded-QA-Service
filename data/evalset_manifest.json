@@ -1,0 +1,22 @@
+{
+  "disjoint": true,
+  "evalset": {
+    "answerable": 150,
+    "path": "data/evalset.jsonl",
+    "unanswerable": 50
+  },
+  "license": "CC-BY-SA-4.0",
+  "min_question_words": 3,
+  "multi_gold_questions": 4,
+  "source_sha256": "80a5225e94905956a6446d296ca1093975c4d3b3260f1d6c8f68bc2ab77182d8",
+  "stamp": {
+    "command": "python scripts/build_evalset.py",
+    "commit": "891dafa728c57c74944cb94708a24e7cb25f21cf",
+    "seed": 1234
+  },
+  "tuning": {
+    "answerable": 70,
+    "path": "data/tuning.jsonl",
+    "unanswerable": 30
+  }
+}

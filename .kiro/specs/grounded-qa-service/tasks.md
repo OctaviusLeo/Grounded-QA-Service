@@ -136,7 +136,7 @@ flowchart TB
   - Test the count thresholds, unanswerable labeling, and unresolved-gold-ID reporting path.
   - _Requirements: 2.3, 2.4, 2.6_
 
-- [ ] 2.7 Build the evaluation and tuning question sets from SQuAD 2.0
+- [x] 2.7 Build the evaluation and tuning question sets from SQuAD 2.0
   - Write `scripts/build_evalset.py`: with a fixed seed, sample a reported Evaluation_Set of 200 questions (150 answerable, 50 unanswerable) and a disjoint tuning split of 100 questions (70 answerable, 30 unanswerable). Gold Passage_IDs are the passages whose span contains the gold answer offset. Write `data/evalset.jsonl`, `data/tuning.jsonl`, and a stamped manifest; run the validator from 2.5; record the dataset and license in `THIRD_PARTY.md`.
   - _Requirements: 2.3, 2.4, 2.5, 2.6, 0.8_
 
