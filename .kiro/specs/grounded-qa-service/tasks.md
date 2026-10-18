@@ -386,7 +386,7 @@ flowchart TB
   - `scripts/render_readme.py` fills generated blocks of `README.md` from `results/summary.md` (Results_Table with a CI per metric, stamps). The agent writes the prose: architecture diagram and explanation, run instructions with the exact single command per test suite and per reported result, the exact single `docker compose up` command (matching 6.4), cost-and-latency trade-offs, known limitations, and the demo GIF reference. `scripts/check_readme.py` passes.
   - _Requirements: 11.1, 11.2, 11.3, 0.11_
 
-- [ ] 6.15 M5 gate (project complete)
+- [x] 6.15 M5 gate (project complete)
   - `bash scripts/gate_m5.sh`: unit suite + coverage pass, `check_readme.py` passes, `results/baseline.json` is stamped, `docs/media/demo.gif` exists. Push, then confirm the latest `main` CI run completed with `success`.
 
 ## Notes
