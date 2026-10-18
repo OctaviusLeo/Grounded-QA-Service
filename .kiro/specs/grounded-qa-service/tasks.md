@@ -178,7 +178,7 @@ flowchart TB
   - Test empty retrieval maps to 0.0, outputs lie in `[0,1]`, and the threshold is read from config in `[0,1]`.
   - _Requirements: 4.4, 4.6_
 
-- [ ] 3.3 Implement the `PromptBuilder` with delimited data and anti-injection system prompt
+- [x] 3.3 Implement the `PromptBuilder` with delimited data and anti-injection system prompt
   - Write `gqa/prompt.py` with `PromptMessages` and `PromptBuilder.build`, rendering Passages (with their Passage_IDs) only inside a delimited data block and placing the answer-only, cite-each-ID, refuse-with-exact-text, and treat-passages-as-data directives in the system message. The agent writes the wording.
   - _Requirements: 4.2, 6.1_
 
