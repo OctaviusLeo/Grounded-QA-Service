@@ -232,7 +232,7 @@ flowchart TB
 
 ## M3 — Evaluation harness, LLM judge, label packet
 
-- [ ] 4.1 Implement the remaining metric functions
+- [x] 4.1 Implement the remaining metric functions
   - Add `exact_match`, `token_f1` (SQuAD normalization, max over gold answers), `citation_precision`, `citation_recall`, `refusal_accuracy` (all `[0,1]`), `cohen_kappa` (`[-1,1]`), and `percentile` to `gqa/metrics.py`.
   - _Requirements: 7.2, 7.3, 7.4, 7.5_
 

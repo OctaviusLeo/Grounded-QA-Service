@@ -10,13 +10,91 @@ the list has ``k`` entries (tested).
 from __future__ import annotations
 
 import math
-from collections.abc import Callable, Sequence, Set
+import re
+import string
+from collections import Counter
+from collections.abc import Callable, Hashable, Sequence, Set
 from dataclasses import dataclass
 
 import numpy as np
 from src.evaluate import calculate_recall_at_k  # Rag_Lite
 
 MIN_RESAMPLES = 1000
+
+_ARTICLES = re.compile(r"\b(a|an|the)\b")
+_PUNCT = str.maketrans("", "", string.punctuation)
+
+
+def normalize_answer(text: str) -> str:
+    """SQuAD's official normalization: lower case, drop punctuation and articles, squeeze spaces."""
+    return " ".join(_ARTICLES.sub(" ", text.lower().translate(_PUNCT)).split())
+
+
+def exact_match(pred: str, gold: str | Sequence[str]) -> float:
+    """1.0 if the normalized prediction equals a normalized gold answer (the best over several)."""
+    golds = [gold] if isinstance(gold, str) else list(gold)
+    if not golds:
+        return 0.0
+    p = normalize_answer(pred)
+    return float(any(p == normalize_answer(g) for g in golds))
+
+
+def _f1(pred: str, gold: str) -> float:
+    p, g = normalize_answer(pred).split(), normalize_answer(gold).split()
+    if not p or not g:
+        return float(p == g)
+    common = sum((Counter(p) & Counter(g)).values())
+    if common == 0:
+        return 0.0
+    precision, recall = common / len(p), common / len(g)
+    return 2 * precision * recall / (precision + recall)
+
+
+def token_f1(pred: str, gold: str | Sequence[str]) -> float:
+    """SQuAD token-level F1, the best over the gold answers."""
+    golds = [gold] if isinstance(gold, str) else list(gold)
+    return max((_f1(pred, g) for g in golds), default=0.0)
+
+
+def citation_precision(cited: Set[str], gold: Set[str]) -> float:
+    """Fraction of cited passages that are gold (0.0 when nothing is cited)."""
+    return len(cited & gold) / len(cited) if cited else 0.0
+
+
+def citation_recall(cited: Set[str], gold: Set[str]) -> float:
+    """Fraction of gold passages that are cited (0.0 when there is no gold)."""
+    return len(cited & gold) / len(gold) if gold else 0.0
+
+
+def refusal_accuracy(refused: Sequence[bool], unanswerable: Sequence[bool]) -> float:
+    """Fraction of Unanswerable_Questions answered with a Refusal."""
+    if len(refused) != len(unanswerable):
+        raise ValueError("refused and unanswerable flags differ in length")
+    flags = [r for r, u in zip(refused, unanswerable) if u]
+    if not flags:
+        raise ValueError("no unanswerable questions")
+    return sum(flags) / len(flags)
+
+
+def cohen_kappa(a: Sequence[Hashable], b: Sequence[Hashable]) -> float:
+    """Cohen's kappa between two raters. Identical label sequences give 1.0, including the
+    degenerate case where both raters use a single category (expected agreement 1)."""
+    if len(a) != len(b) or not a:
+        raise ValueError("need two non-empty label sequences of equal length")
+    n = len(a)
+    observed = sum(x == y for x, y in zip(a, b)) / n
+    ca, cb = Counter(a), Counter(b)
+    expected = sum(ca[c] * cb[c] for c in set(ca) | set(cb)) / (n * n)
+    if expected >= 1.0:
+        return 1.0 if observed >= 1.0 else 0.0
+    return (observed - expected) / (1.0 - expected)
+
+
+def percentile(values: Sequence[float], q: float) -> float:
+    """Linear-interpolation percentile (numpy's default), ``q`` in [0, 100]."""
+    if not values:
+        raise ValueError("no values")
+    return float(np.percentile(np.asarray(values, dtype=float), q))
 
 
 def _check_k(k: int) -> None:

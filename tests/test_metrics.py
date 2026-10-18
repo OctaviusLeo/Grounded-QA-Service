@@ -51,3 +51,43 @@ def test_bootstrap_ci_custom_statistic_and_errors():
         metrics.bootstrap_ci([], seed=0)
     with pytest.raises(ValueError, match="confidence"):
         metrics.bootstrap_ci([1.0], seed=0, confidence=1.0)
+
+
+def test_squad_normalization_em_and_f1():
+    assert metrics.normalize_answer("The  Santa-Clara, CA!") == "santaclara ca"
+    assert metrics.exact_match("the Normans", ["Normans", "Norse"]) == 1.0
+    assert metrics.exact_match("Normandy", []) == 0.0
+    assert metrics.token_f1("in Santa Clara California", "Santa Clara") == pytest.approx(2 * 0.5 * 1.0 / 1.5)
+    assert metrics.token_f1("", "") == 1.0 and metrics.token_f1("a", "Paris") == 0.0
+    assert metrics.token_f1("x", []) == 0.0
+
+
+def test_citation_precision_recall_and_refusal_accuracy():
+    assert metrics.citation_precision({"a", "b"}, {"a"}) == 0.5
+    assert metrics.citation_precision(set(), {"a"}) == 0.0
+    assert metrics.citation_recall({"a"}, {"a", "b"}) == 0.5
+    assert metrics.citation_recall({"a"}, set()) == 0.0
+    assert metrics.refusal_accuracy([True, False, True], [True, True, False]) == 0.5
+    with pytest.raises(ValueError):
+        metrics.refusal_accuracy([True], [False])
+    with pytest.raises(ValueError):
+        metrics.refusal_accuracy([True], [True, False])
+
+
+def test_cohen_kappa_matches_sklearn_and_edge_cases():
+    from sklearn.metrics import cohen_kappa_score
+
+    a = [1, 1, 0, 1, 0, 0, 1, 1, 0, 1]
+    b = [1, 0, 0, 1, 0, 1, 1, 1, 1, 1]
+    assert metrics.cohen_kappa(a, b) == pytest.approx(cohen_kappa_score(a, b))
+    assert metrics.cohen_kappa([1, 1, 1], [1, 1, 1]) == 1.0
+    assert metrics.cohen_kappa([1, 0], [0, 1]) == -1.0
+    with pytest.raises(ValueError):
+        metrics.cohen_kappa([], [])
+
+
+def test_percentile():
+    assert metrics.percentile([1, 2, 3, 4], 50) == 2.5
+    assert metrics.percentile([10], 95) == 10
+    with pytest.raises(ValueError):
+        metrics.percentile([], 50)
