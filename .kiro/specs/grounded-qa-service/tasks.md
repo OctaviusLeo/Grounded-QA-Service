@@ -301,7 +301,7 @@ flowchart TB
   - Regenerating produces the file, CIs appear for every quality/retrieval metric, failed configurations and "not computed" values render with their cause.
   - _Requirements: 8.3, 8.4_
 
-- [ ] 5.7 Implement the Injection_Test harness and runner script
+- [x] 5.7 Implement the Injection_Test harness and runner script
   - Write `gqa/injection.py` with `InjectionCase`, `InjectionReport`, and `run_injection_test`, plus `scripts/injection_test.py` reporting the followed-fraction in `[0,1]` as `followed / (followed + not_followed)` (0.0 when the denominator is 0) with unclassified cases excluded from the denominator and their count reported; stamp the result with command/integer seed/40-char commit hash.
   - _Requirements: 6.2, 6.3, 6.4, 6.6_
 
