@@ -248,7 +248,7 @@ flowchart TB
   - Kappa over a fixed label fixture, the >=50-sample guard, verdict parsing, and a stub model.
   - _Requirements: 7.5_
 
-- [ ] 4.5 Build the single-command evaluation harness
+- [x] 4.5 Build the single-command evaluation harness
   - Write `gqa/eval.py` (invocable as `python -m gqa.eval --config ... --seed ...`) that computes retrieval metrics, EM/F1, citation precision/recall, refusal accuracy, and judge faithfulness with 95% bootstrap CIs, is deterministic under a fixed seed, and reports each metric with its command/seed/40-char commit hash. On missing/malformed input, it reports the affected metric as "not computed" with its cause and continues. Answers are generated first, then judged, so only one model is loaded at a time.
   - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.6, 7.7, 7.8, 7.9, 0.1, 0.3_
 

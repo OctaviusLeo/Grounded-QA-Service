@@ -1,0 +1,9 @@
+# CI evaluation subset (Req 10.1): the first N answerable and unanswerable questions of
+# data/evalset.jsonl in file order (the file is in a seeded random order).
+subset:
+  answerable: 24
+  unanswerable: 6
+# The configuration evaluated in CI.
+mode: hybrid_rerank
+model: granite3.3:2b
+judge_model: granite3.3:8b
