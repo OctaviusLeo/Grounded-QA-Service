@@ -1,0 +1,72 @@
+[
+  {
+    "question": "When was the Gerald Ratner Athletics Center constructed?",
+    "events": [
+      {
+        "t": 1.0781139289974817,
+        "event": "chunk",
+        "data": {
+          "text": "2003 [a23p010:0:e929d39b]"
+        }
+      },
+      {
+        "t": 1.0785492889990564,
+        "event": "done",
+        "data": {
+          "text": "2003 [a23p010:0:e929d39b]",
+          "cited_ids": [
+            "a23p010:0:e929d39b"
+          ],
+          "refused": false,
+          "request_id": "14b126ea3b4c461ead22adc66489fa22"
+        }
+      }
+    ]
+  },
+  {
+    "question": "Who was Edward the Confessor's half-brother?",
+    "events": [
+      {
+        "t": 0.8424957649986027,
+        "event": "chunk",
+        "data": {
+          "text": "Harthacnut [a00p015:0:e4bd786b]"
+        }
+      },
+      {
+        "t": 0.8427117059982265,
+        "event": "done",
+        "data": {
+          "text": "Harthacnut [a00p015:0:e4bd786b]",
+          "cited_ids": [
+            "a00p015:0:e4bd786b"
+          ],
+          "refused": false,
+          "request_id": "da07973481e3491393b1d55cc5c7b380"
+        }
+      }
+    ]
+  },
+  {
+    "question": "Who won the 2030 FIFA World Cup?",
+    "events": [
+      {
+        "t": 0.3636591419999604,
+        "event": "chunk",
+        "data": {
+          "text": "not found in the documents"
+        }
+      },
+      {
+        "t": 0.36392762899777154,
+        "event": "done",
+        "data": {
+          "text": "not found in the documents",
+          "cited_ids": [],
+          "refused": true,
+          "request_id": "ae55f113eae3400bb1211769b75e7b76"
+        }
+      }
+    ]
+  }
+]

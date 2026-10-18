@@ -378,7 +378,7 @@ flowchart TB
   - **Property 16: README number traceability** — the check flags exactly the untraceable numbers and fails when any exist.
   - **Validates: Requirements 11.4, 11.5**
 
-- [ ] 6.13 Record the demo GIF
+- [x] 6.13 Record the demo GIF
   - `scripts/make_demo_gif.py`: with the Compose stack running, send real questions to `/answer/stream` (one answered, one refused), capture the chunks with their arrival times, and render them into `docs/media/demo.gif`.
   - _Requirements: 11.1_
 
