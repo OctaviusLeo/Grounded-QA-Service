@@ -1,9 +1,9 @@
 [project]
 name = "grounded-qa-service"
 version = "0.1.0"
-description = "Grounded QA Service: answers only from retrieved passages, cites passage IDs, and measures itself (private portfolio project)."
+description = "Grounded QA Service: answers only from retrieved passages, cites passage IDs, and measures itself (portfolio project)."
 requires-python = ">=3.12,<3.13"
-# Private repository: no license field, no classifiers, never published.
+# Licensed under MIT (see LICENSE); no classifiers, never published.
 dependencies = [
     # Rag_Lite is pinned by commit in [tool.uv.sources]; its package version at that commit is 0.1.0.
     "rag-lite==0.1.0",

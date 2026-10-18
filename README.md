@@ -2,7 +2,7 @@
 
 A question-answering service that answers **only** from retrieved passages, cites the passage it used, refuses with "not found in the documents" when it cannot, and measures itself so that every change is checked before it ships. It retrieves with my earlier library [rag-lite-tfidf-eval](https://github.com/OctaviusLeo/rag-lite-tfidf-eval) (installed as a pinned package, not rewritten), runs open-weight IBM Granite models locally on an RTX 3080 through Ollama, and reports every number with the command, seed, and commit that produced it.
 
-> Private portfolio repository: no license, no published package, no release.
+> Code is released under the [MIT License](LICENSE). The files under `data/` are derived from SQuAD v2.0 and stay `CC-BY-SA-4.0` (see [THIRD_PARTY.md](THIRD_PARTY.md)). There is no published package or release.
 
 ![Demo: streamed answers with their citations, and a refusal](docs/media/demo.gif)
 
