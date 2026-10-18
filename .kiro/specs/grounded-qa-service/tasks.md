@@ -83,7 +83,7 @@ flowchart TB
 
 ## M0 — Environment and local model server smoke test
 
-- [ ] 1.1 Implement the OpenAI-compatible `ModelClient` with fail-fast secret handling
+- [x] 1.1 Implement the OpenAI-compatible `ModelClient` with fail-fast secret handling
   - Write `gqa/model_client.py` reading the API key from `os.environ[api_key_env]`; if required and unset/empty, raise `MissingSecretError` naming the variable before any request. Enforce a request timeout and support `complete` (returns text and token usage) and `stream`. Temperature 0 and a fixed seed are sent with every request.
   - _Requirements: 1.6, 0.13_
 
