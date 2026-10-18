@@ -170,7 +170,7 @@ flowchart TB
 
 ## M2 — Answering pipeline with citations and refusal
 
-- [ ] 3.1 Implement confidence estimation and refusal decision
+- [x] 3.1 Implement confidence estimation and refusal decision
   - Write `gqa/confidence.py` with `estimate_confidence` (0.0 for empty retrieval; otherwise the top score mapped into `[0,1]`: the logistic of the cross-encoder logit for rerank modes, the clipped fused score otherwise) and `should_refuse(confidence, threshold)`.
   - _Requirements: 4.4, 4.6_
 
