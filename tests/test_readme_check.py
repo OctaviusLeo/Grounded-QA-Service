@@ -104,3 +104,7 @@ def test_property_16_readme_number_traceability(parts):
     findings = rc.check(text, SUMMARY, sources)
     assert [f.number for f in findings] == expected
     assert bool(findings) == bool(expected)  # the check fails exactly when an untraceable number exists
+
+
+def test_metric_labels_are_not_numbers():
+    assert rc.numbers_in("Recall@5 and nDCG@10, P95, v2.0, top-5") == set()

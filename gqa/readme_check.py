@@ -23,7 +23,8 @@ from pathlib import Path
 
 from gqa.docblock import read_block
 
-NUMBER = re.compile(r"(?<![\w.\-/])[-+]?\d[\d,]*(?:\.\d+)?%?(?![\w\-/]|\.\d)")
+# A number not glued to a word, path, or label (Recall@5, P95, v2.0, top-5 are labels, not measurements).
+NUMBER = re.compile(r"(?<![\w.\-/@])[-+]?\d[\d,]*(?:\.\d+)?%?(?![\w\-/]|\.\d)")
 _BLOCK = re.compile(r"<!-- BEGIN (summary:[^>]+?) -->\n?(.*?)\n?<!-- END \1 -->", re.S)
 _SKIP = [
     re.compile(r"```.*?```", re.S),                     # fenced code
