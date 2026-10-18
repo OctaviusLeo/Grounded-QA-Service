@@ -22,7 +22,7 @@ QUESTIONS = [
     "Who was Edward the Confessor's half-brother?",
     "Who won the 2030 FIFA World Cup?",
 ]
-W, H, PAD, LINE = 1100, 560, 18, 22
+W, H, PAD, LINE = 1100, 330, 18, 22
 BG, FG, DIM, OK, WARN = (24, 26, 33), (220, 223, 228), (130, 136, 150), (120, 200, 140), (230, 180, 90)
 MAX_WAIT_S = 1.5
 
@@ -74,7 +74,7 @@ def main() -> int:
     for q in QUESTIONS:
         events = record(q)
         log.append({"question": q, "events": events})
-        screen.append((f"$ curl -N {URL} -d '{{\"query\": \"{q}\"}}'", FG))
+        screen.append((f"$ curl -N localhost:8000/answer/stream -d '{{\"query\": \"{q}\"}}'", FG))
         frames.append(frame(screen, f))
         durations.append(900)
         last_t, answer = 0.0, ""
