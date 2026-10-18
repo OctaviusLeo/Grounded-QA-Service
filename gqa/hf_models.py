@@ -56,13 +56,18 @@ def require_pins(cache: Path | None = None) -> None:
         raise PinError("Hugging Face models not at pinned revisions (run scripts/fetch_hf_models.py): " + "; ".join(problems))
 
 
+# What sentence-transformers loads: configs, tokenizer files, and safetensors weights (not the
+# ONNX, OpenVINO, TensorFlow, or Flax copies that the repositories also carry).
+ALLOW_PATTERNS = ["*.json", "*.txt", "model.safetensors", "1_Pooling/*", "2_Normalize/*"]
+
+
 def fetch_pinned(cache: Path | None = None, download=None) -> None:
     """Download each pinned revision and make the cache's ``main`` ref point at it."""
     cache = cache or hub_cache()
     if download is None:  # pragma: no cover - exercised by scripts/fetch_hf_models.py
         from huggingface_hub import snapshot_download as download
     for repo, sha in PINNED.items():
-        download(repo_id=repo, revision=sha, cache_dir=str(cache))
+        download(repo_id=repo, revision=sha, cache_dir=str(cache), allow_patterns=ALLOW_PATTERNS)
         ref = _repo_dir(repo, cache) / "refs" / "main"
         ref.parent.mkdir(parents=True, exist_ok=True)
         ref.write_text(sha)

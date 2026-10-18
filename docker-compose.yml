@@ -30,6 +30,40 @@ services:
       retries: 30
     restart: unless-stopped
 
+  model-init:
+    # Pulls the serving model into the shared volume once; a no-op when it is already present.
+    image: ollama/ollama:0.40.6@sha256:265409e1d931028a8f7d5a32bcbafddd7bffbc6cc629d77efe9560adf692a5e7
+    environment:
+      OLLAMA_HOST: ollama:11434
+    entrypoint: ["ollama", "pull", "granite3.3:8b"]
+    depends_on:
+      ollama:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    # FastAPI service at http://127.0.0.1:8000 (answer, answer/stream, health, metrics).
+    build: .
+    image: gqa-api:local
+    environment:
+      GQA_MODEL_BASE_URL: http://ollama:11434/v1
+      # Secrets come only from the environment (none is required for the local model).
+      GQA_MODEL_API_KEY: ${GQA_MODEL_API_KEY:-}
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      ollama:
+        condition: service_healthy
+      model-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request, sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=5).status == 200 else 1)"]
+      interval: 5s
+      timeout: 10s
+      retries: 60
+      start_period: 30s
+    restart: unless-stopped
+
 volumes:
   ollama:
     name: gqa_ollama

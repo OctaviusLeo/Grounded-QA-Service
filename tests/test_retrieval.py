@@ -66,7 +66,7 @@ def test_pin_helpers(tmp_path):
     assert len(hf_models.verify_pins(tmp_path)) == 2
     calls = []
 
-    def fake_download(repo_id, revision, cache_dir):
+    def fake_download(repo_id, revision, cache_dir, allow_patterns=None):
         calls.append((repo_id, revision))
         snap = tmp_path / ("models--" + repo_id.replace("/", "--")) / "snapshots" / revision
         snap.mkdir(parents=True)

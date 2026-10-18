@@ -1,0 +1,13 @@
+.git
+.kiro
+.github
+.venv
+**/__pycache__
+.pytest_cache
+.hypothesis
+results
+docs
+tests
+scripts
+data/evalset.jsonl
+data/tuning.jsonl
