@@ -198,7 +198,7 @@ flowchart TB
   - Test extraction of zero, one, and many citations and malformed-marker handling.
   - _Requirements: 4.3_
 
-- [ ] 3.8 Implement the `CitationValidator`
+- [x] 3.8 Implement the `CitationValidator`
   - Write `gqa/validate.py` with `ValidationResult` and `CitationValidator.validate`: accept iff every cited ID is retrieved and every sentence carries a citation; report `offending == cited − retrieved`; on reject, return a corrected Answer (only sentences whose citations are all retrieved) or a Refusal.
   - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
