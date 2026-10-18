@@ -330,7 +330,7 @@ flowchart TB
 
 ## M5 — Service, orchestration, CI gate, README
 
-- [ ] 6.1 Implement the FastAPI service with request-ID middleware and structured logging
+- [x] 6.1 Implement the FastAPI service with request-ID middleware and structured logging
   - Write `gqa/service.py` with `AnswerRequest` (Pydantic `min_length=1`, `max_length=MAX_QUERY_LEN`, strict string), `CitedAnswer`, and endpoints `POST /answer`, `POST /answer/stream` (server-sent events, first chunk within the documented timeout), `GET /health`, `GET /metrics` (JSON request-count + latency). Middleware assigns a unique request_id and emits >=1 JSON log per request recording request_id, start time, outcome, and duration_ms. Invalid queries are rejected before the pipeline, leaving state unchanged. Secrets are read from env vars; the service fails to start and names the missing secret if a required one is absent.
   - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.8, 9.9_
 
