@@ -281,11 +281,11 @@ flowchart TB
   - Write `gqa/experiments.py` with `Configuration`, `ConfigResult`, and `run_experiments` over the 4 Configurations in `config/experiments.yaml` (`bm25` + 8B; `hybrid` + 8B; `hybrid_rerank` + 2B; `hybrid_rerank` + 8B), measuring quality + retrieval metrics (with CIs), P50/P95 latency (ms, pipeline only), and cost per 1,000 questions (USD, >=2 decimals). Local cost = measured GPU energy × the recorded residential electricity price; hosted cost (unused) = token counts × recorded per-token prices. A failed Configuration is marked with its cause and the rest continue.
   - _Requirements: 8.1, 8.2, 8.5, 8.6_
 
-- [ ] 5.2 Write property test for latency percentile ordering
+- [x] 5.2 Write property test for latency percentile ordering
   - **Property 12: Latency percentile ordering** — reported P50 <= P95.
   - **Validates: Requirements 8.2**
 
-- [ ] 5.3 Write property test for hosted cost formula
+- [x] 5.3 Write property test for hosted cost formula
   - **Property 13: Hosted cost computed from the defining formula** — `cost_per_1k == formula(counts, prices)` within 1e-6, >=2 decimals preserved.
   - **Validates: Requirements 8.5**
 
