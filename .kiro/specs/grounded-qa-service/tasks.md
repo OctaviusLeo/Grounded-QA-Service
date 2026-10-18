@@ -374,7 +374,7 @@ flowchart TB
   - Write `gqa/readme_check.py` + `scripts/check_readme.py` that verifies every number in the README traces to `results/summary.md` or another script-generated file (generated blocks, or numbers in an allow-list of non-measurement contexts such as requirement IDs, versions, ports, and commands); report each untraceable number and exit with a failed status when any exist.
   - _Requirements: 11.4, 11.5_
 
-- [ ] 6.12 Write property test for README number traceability
+- [x] 6.12 Write property test for README number traceability
   - **Property 16: README number traceability** — the check flags exactly the untraceable numbers and fails when any exist.
   - **Validates: Requirements 11.4, 11.5**
 
