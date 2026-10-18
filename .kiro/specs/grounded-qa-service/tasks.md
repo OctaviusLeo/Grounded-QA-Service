@@ -190,7 +190,7 @@ flowchart TB
   - Write `scripts/tune_thresholds.py`: for each retrieval mode, compute retrieval confidence on the tuning split only and pick the threshold that maximizes balanced accuracy of "refuse unanswerable / answer answerable" (ties to the lower threshold). Write `config/thresholds.yaml` (generated, stamped). The reported Evaluation_Set is never read.
   - _Requirements: 4.6, 0.1_
 
-- [ ] 3.6 Implement the `AnswerParser`
+- [x] 3.6 Implement the `AnswerParser`
   - Write `gqa/parser.py` with `ParsedAnswer` and `parse_answer`, extracting cited Passage_IDs via the documented citation syntax (`[<passage_id>]`, several IDs separated by commas allowed) and detecting the exact refusal text.
   - _Requirements: 4.3_
 
