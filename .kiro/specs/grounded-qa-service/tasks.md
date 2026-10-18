@@ -144,11 +144,11 @@ flowchart TB
   - Write `gqa/retrieval.py` with `RetrievedPassage`, `RetrievalMode`, a backend that calls Rag_Lite's `build_index` and `retrieve_hybrid` (BM25 / hybrid / hybrid+rerank), and `RagLiteRetriever.retrieve` returning descending-score, de-duplicated results; results sharing no word with the query are dropped, so a no-match query returns `[]` without raising. Pin the Hugging Face model revisions Rag_Lite loads. Record the reuse mode and license in `THIRD_PARTY.md`.
   - _Requirements: 3.1, 3.2, 3.4, 3.5, 3.6_
 
-- [ ] 2.9 Write property test for retrieval ranking order and no duplicates
+- [x] 2.9 Write property test for retrieval ranking order and no duplicates
   - **Property 5: Retrieval ranking order and no duplicates** — scores non-increasing by rank, all Passage_IDs distinct (real Rag_Lite TF-IDF/BM25 index over generated passages).
   - **Validates: Requirements 3.2**
 
-- [ ] 2.10 Write property test for empty retrieval on no match
+- [x] 2.10 Write property test for empty retrieval on no match
   - **Property 6: Empty retrieval on no match** — disjoint-vocabulary query returns `[]` and raises nothing.
   - **Validates: Requirements 3.4**
 
