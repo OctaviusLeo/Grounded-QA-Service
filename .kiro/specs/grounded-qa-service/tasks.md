@@ -112,7 +112,7 @@ flowchart TB
 
 ## M1 — Corpus, chunking, evaluation set, retrieval baseline
 
-- [ ] 2.1 Implement deterministic corpus ingestion and chunking
+- [x] 2.1 Implement deterministic corpus ingestion and chunking
   - Write `gqa/ingest.py` with the `Passage` dataclass, `Chunker` (delegating window splitting to Rag_Lite's `chunk_text`), `passage_id_for(doc_id, chunk_index, text)` (stable function of normalized text), and `find_duplicate_ids` returning `{duplicated_id: count}`.
   - _Requirements: 2.1, 2.2_
 
