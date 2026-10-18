@@ -1,0 +1,8 @@
+# docker compose up -d --build, then /health accepted after 1 polls (2 s apart)
+health: {"status":"ok","mode":"hybrid_rerank","model":"granite3.3:8b"}
+POST /answer {"query": "Who was Edward the Confessor's half-brother?"} -> {"text":"Harthacnut [a00p015:0:e4bd786b]","cited_ids":["a00p015:0:e4bd786b"],"request_id":"149c5ed5af014e0da29562d9c37d0290","refused":false}
+POST /answer {"query": "Who won the 2030 FIFA World Cup?"} -> {"text":"not found in the documents","cited_ids":[],"request_id":"1f8b722e4c144b338e277daa6ea00c55","refused":true}
+metrics: {"requests_total":3,"by_endpoint":{"/answer":3},"by_outcome":{"refused":2,"answered":1},"latency_ms":{"count":3,"mean_ms":712.4792133339118,"p50_ms":392.37967699955334,"p95_ms":1296.8793485018978,"max_ms":1397.3793120021583}}
+services:
+api running Up 46 seconds (healthy)
+ollama running Up 2 hours (healthy)

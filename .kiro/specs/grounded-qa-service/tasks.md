@@ -342,11 +342,11 @@ flowchart TB
   - Invalid/empty/oversized query rejection (Req 9.2); metrics endpoint shape (Req 9.6); streaming first-chunk + reassembly (Req 9.3); missing-secret start-up failure (Req 9.9).
   - _Requirements: 9.2, 9.3, 9.6, 9.9_
 
-- [ ] 6.4 Author the service image and full Compose stack
+- [x] 6.4 Author the service image and full Compose stack
   - Write the `Dockerfile` (pinned base image, `uv sync --frozen`, Hugging Face models baked in at their pinned revisions, corpus built at image build) and add `model-init` (pulls the serving model) and `api` services to `docker-compose.yml`, so one documented `docker compose up` starts the service plus every dependency and reaches a state where the endpoint accepts requests.
   - _Requirements: 9.7, 11.3_
 
-- [ ] 6.5 Write and run an integration test polling `/health`
+- [x] 6.5 Write and run an integration test polling `/health`
   - `scripts/compose_check.sh` starts the stack detached, polls `/health` until it accepts, sends one `/answer` request, and leaves the `ollama` service running. Marked `docker`.
   - _Requirements: 9.7_
 
