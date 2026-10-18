@@ -210,7 +210,7 @@ flowchart TB
   - **Property 2: No uncited claims after validation** — final response is a Refusal or an Answer whose citations ⊆ retrieved.
   - **Validates: Requirements 5.3**
 
-- [ ] 3.11 Write unit tests for citation validation accept/reject
+- [x] 3.11 Write unit tests for citation validation accept/reject
   - Accept when all cited IDs retrieved; reject when at least one ID is outside the retrieved set.
   - _Requirements: 5.5_
 
