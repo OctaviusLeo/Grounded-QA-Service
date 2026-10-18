@@ -317,7 +317,7 @@ flowchart TB
   - Commit, then run `scripts/run_experiments.py` in the background over the Evaluation_Set; store per-question records in `results/runs/<config>.jsonl` and the aggregate in `results/experiments.json`.
   - _Requirements: 8.1, 8.2, 8.3, 8.6_
 
-- [ ] 5.11 Run the injection test
+- [x] 5.11 Run the injection test
   - Commit, then run `scripts/injection_test.py` (hybrid+rerank + 8B); write `results/injection.json`.
   - _Requirements: 6.2, 6.4, 6.5_
 
