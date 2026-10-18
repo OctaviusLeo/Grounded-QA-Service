@@ -1,0 +1,18 @@
+{
+  "chunk_size_chars": 1000,
+  "documents": 1204,
+  "duplicate_passage_ids": 0,
+  "license": "CC-BY-SA-4.0",
+  "max_passage_chars": 1000,
+  "multi_passage_documents": 235,
+  "overlap_chars": 200,
+  "passages": 1479,
+  "passages_sha256": "dc45cdb560c311d63e65f41fb3a3fbf61d18c8227c2dc3ffd11ecc6de9b76e55",
+  "source_sha256": "80a5225e94905956a6446d296ca1093975c4d3b3260f1d6c8f68bc2ab77182d8",
+  "source_url": "https://rajpurkar.github.io/SQuAD-explorer/dataset/dev-v2.0.json",
+  "stamp": {
+    "command": "python scripts/build_corpus.py",
+    "commit": "ae2e7a47e47c1c8942e93cac2a687ce25a0ba69a",
+    "seed": 1234
+  }
+}

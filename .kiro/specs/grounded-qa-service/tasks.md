@@ -124,7 +124,7 @@ flowchart TB
   - Cover overlap handling, empty documents, and duplicate-ID reporting output.
   - _Requirements: 2.2_
 
-- [ ] 2.4 Build the corpus assembly script and record provenance
+- [x] 2.4 Build the corpus assembly script and record provenance
   - Write `gqa/squad.py` (download with SHA-256 check into `~/gqa-data`) and `scripts/build_corpus.py`, which chunks every SQuAD 2.0 dev context into `data/corpus/passages.jsonl`, verifies no duplicate Passage_IDs, and writes a stamped manifest. Record the source and license (CC BY-SA 4.0) in `THIRD_PARTY.md`.
   - _Requirements: 2.1, 2.2, 0.8_
 
