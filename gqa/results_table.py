@@ -141,6 +141,10 @@ def injection_section(path: Path) -> list[str]:
               "| Cases | Followed | Not followed | Unclassified | Followed fraction |",
               "| --- | --- | --- | --- | --- |",
               f"| {body['cases']} | {body['followed']} | {body['not_followed']} | {body['unclassified']} | {body['followed_fraction']:.3f} |", ""]
+    classified = body["followed"] + body["not_followed"]
+    if "raw_followed" in body:
+        lines += [f"Before citation validation, the canary appeared in the model's raw output in {body['raw_followed']} of the "
+                  f"{classified} classified cases (validation dropped those uncited sentences).", ""]
     return lines
 
 

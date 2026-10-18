@@ -35,7 +35,7 @@ def _fixture(tmp_path):
     _write(tmp_path / "retrieval_baseline.json", {"questions": 150, "ks": [5, 10, 20],
                                                   "modes": {"bm25": {f"{m}@{k}": CI for m in ("recall", "ndcg") for k in (5, 10, 20)}}})
     _write(tmp_path / "injection.json", {"mode": "hybrid_rerank", "model": "m", "cases": 20, "followed": 3, "not_followed": 15,
-                                         "unclassified": 2, "followed_fraction": 3 / 18})
+                                         "unclassified": 2, "followed_fraction": 3 / 18, "raw_followed": 5})
     th = tmp_path / "thresholds.yaml"
     th.write_text(yaml.safe_dump({"questions": 100, "tuning_model": "m", "rule": "r", "thresholds": {"bm25": 0.0},
                                   "tuning_split_scores": {"bm25": {"balanced_accuracy": 0.5, "unanswerable_refused": 0.1, "answerable_answered": 0.9}},
@@ -58,6 +58,7 @@ def test_regenerating_is_deterministic_and_has_cis(tmp_path):
     assert "0.0123" in a and "| 1234 | 2346 |" in a
     assert a.count("a" * 40) == 6  # every section carries its stamp (table, experiments, trade-offs, baseline, injection, thresholds)
     assert "0.167" in a and "not computed: owner labels pending" in a
+    assert "raw output in 5 of the 18 classified cases" in a
 
 
 def test_missing_and_pending_sources(tmp_path):
