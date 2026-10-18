@@ -1,0 +1,43 @@
+# Default configuration. Every randomized component reads `seed` from here (Req 0.2).
+# Environment overrides: GQA_MODEL_BASE_URL, GQA_SERVICE_MODEL, GQA_SERVICE_MODE.
+seed: 1234
+
+paths:
+  corpus: data/corpus/passages.jsonl
+  evalset: data/evalset.jsonl
+  tuning: data/tuning.jsonl
+  thresholds: config/thresholds.yaml
+
+chunking:
+  # Characters, passed to Rag_Lite's chunk_text. Most SQuAD contexts fit in one chunk.
+  chunk_size: 1000
+  overlap: 200
+
+retrieval:
+  k: 5              # passages placed in the prompt
+  candidates: 20    # depth for evaluation (Recall@20) and the cross-encoder's candidate pool
+  hybrid_weights: {tfidf: 0.5, bm25: 0.3, embeddings: 0.2}
+
+model_server:
+  base_url: http://127.0.0.1:8090/v1
+  # Ollama ignores the key. A Hosted_Model would set api_key_required: true (Req 0.9, 0.13).
+  api_key_env: GQA_MODEL_API_KEY
+  api_key_required: false
+  timeout_s: 120
+  max_tokens: 256
+  temperature: 0.0
+
+models:
+  small: granite3.3:2b
+  large: granite3.3:8b
+  judge: granite3.3:8b
+
+refusal:
+  # Used only when config/thresholds.yaml has no entry for a mode. Must lie in [0, 1] (Req 4.6).
+  default_threshold: 0.5
+
+service:
+  model: granite3.3:8b
+  mode: hybrid_rerank
+  max_query_len: 1000
+  first_chunk_timeout_s: 30

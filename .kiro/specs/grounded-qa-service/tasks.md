@@ -77,7 +77,7 @@ flowchart TB
   - Assert the commit hash is 40 hex chars, the stamp round-trips through serialization, and the clean-tree check ignores generated paths but flags source edits (throwaway repository in a temp dir).
   - _Requirements: 0.1_
 
-- [ ] 0.4 Implement the configuration loader
+- [x] 0.4 Implement the configuration loader
   - Write `gqa/config.py` and `config/default.yaml`: seeds, chunking, retrieval `k`, model server URL, model names, timeouts, and refusal thresholds validated to lie in `[0,1]`. Unit tests cover validation errors.
   - _Requirements: 0.2, 4.6_
 
