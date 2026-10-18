@@ -218,7 +218,7 @@ flowchart TB
   - Write `gqa/pipeline.py` with `Answer`, `REFUSAL_TEXT`, and `AnsweringPipeline.answer` orchestrating retrieve -> confidence -> (refuse | prompt -> model -> parse -> validate), returning Answer / corrected Answer / Refusal, plus a sentence-validated streaming variant for the service.
   - _Requirements: 4.1, 4.3, 4.4, 4.5, 5.3_
 
-- [ ] 3.13 Write property test for refusal below confidence threshold
+- [x] 3.13 Write property test for refusal below confidence threshold
   - **Property 3: Refusal below confidence threshold** — `confidence < threshold` ⟹ `refused`, `text == REFUSAL_TEXT`, and the model is not invoked (mock `ModelClient`).
   - **Validates: Requirements 4.4, 4.5**
 
