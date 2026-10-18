@@ -95,7 +95,7 @@ flowchart TB
   - Write `gqa/gpu.py`: parse `nvidia-smi` total/used memory (MiB) and power draw (W), and a background sampler that records the peak memory and mean power between start and stop. Unit tests use canned `nvidia-smi` output.
   - _Requirements: 1.1, 1.3_
 
-- [ ] 1.4 Author the model-server Compose service and model pull
+- [x] 1.4 Author the model-server Compose service and model pull
   - Write `docker-compose.yml` (project name `gqa`) with the `ollama` service: image `ollama/ollama:0.40.6` pinned by digest, all GPUs, `OLLAMA_CONTEXT_LENGTH=8192`, `OLLAMA_MAX_LOADED_MODELS=1`, `OLLAMA_NUM_PARALLEL=1`, volume `gqa_ollama`, port `127.0.0.1:8090:11434`, and a health check. Write `scripts/pull_models.sh` that pulls `granite3.3:2b` and `granite3.3:8b` and records their digests.
   - _Requirements: 1.2, 9.7_
 

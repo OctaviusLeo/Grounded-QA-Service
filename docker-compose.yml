@@ -1,0 +1,35 @@
+# Grounded QA Service stack. One command starts everything: docker compose up
+name: gqa
+
+services:
+  ollama:
+    # Model_Server: OpenAI-compatible endpoint at http://127.0.0.1:8090/v1 on the host.
+    image: ollama/ollama:0.40.6@sha256:265409e1d931028a8f7d5a32bcbafddd7bffbc6cc629d77efe9560adf692a5e7
+    environment:
+      # The 4,096-token default can truncate a five-passage prompt.
+      OLLAMA_CONTEXT_LENGTH: "8192"
+      # One model in VRAM at a time; requests are served one after another.
+      OLLAMA_MAX_LOADED_MODELS: "1"
+      OLLAMA_NUM_PARALLEL: "1"
+      OLLAMA_KEEP_ALIVE: "10m"
+    ports:
+      - "127.0.0.1:8090:11434"
+    volumes:
+      - ollama:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 5s
+      timeout: 10s
+      retries: 30
+    restart: unless-stopped
+
+volumes:
+  ollama:
+    name: gqa_ollama
