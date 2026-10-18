@@ -113,7 +113,7 @@ def test_load_experiments_and_formatting(tmp_path):
     p.write_text("configurations:\n  - {name: a, mode: bm25, model: m}\n  - {name: a, mode: bm25, model: m}\ncost: {electricity_usd_per_kwh: 0.1, electricity_source: s}\n")
     with pytest.raises(ValueError, match="unique"):
         ex.load_experiments(p)
-    assert ex.format_usd(1.5) == "1.50" and ex.format_usd(0.004321) == "0.0043" and ex.format_usd(0) == "0.00"
+    assert ex.format_usd(1.5) == "1.50" and ex.format_usd(0.004321) == "0.0043" and ex.format_usd(0.0123) == "0.0123" and ex.format_usd(0) == "0.00"
     with pytest.raises(ValueError):
         ex.local_cost_per_1k(1.0, 0, 0.1)
     with pytest.raises(ValueError):

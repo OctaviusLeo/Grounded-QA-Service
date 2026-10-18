@@ -297,7 +297,7 @@ flowchart TB
   - Write `gqa/results_table.py` producing `results/summary.md` from the stored run records: one row per Configuration with quality metrics (each with a 95% bootstrap CI from >=1000 resamples), retrieval metrics (with CIs), P50/P95 latency, and cost per 1k; plus retrieval-baseline, injection-test, and judge-agreement sections; and the command/seed/commit stamp of each source.
   - _Requirements: 8.3, 8.4, 0.1_
 
-- [ ] 5.6 Write unit tests for Results_Table generation
+- [x] 5.6 Write unit tests for Results_Table generation
   - Regenerating produces the file, CIs appear for every quality/retrieval metric, failed configurations and "not computed" values render with their cause.
   - _Requirements: 8.3, 8.4_
 
