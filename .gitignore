@@ -19,5 +19,5 @@ coverage.json
 *.egg-info/
 
 # Large or machine-local files live outside the repository (~/gqa-data, ~/gqa-runs)
-runs/
+/runs/
 .cache/

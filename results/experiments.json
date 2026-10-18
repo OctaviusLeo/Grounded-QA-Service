@@ -1,0 +1,566 @@
+{
+  "answerable": 150,
+  "configurations": [
+    {
+      "answering_seconds": 307.86858808099896,
+      "cause": null,
+      "config": "bm25_8b",
+      "cost_basis": "0.02636 kWh GPU energy over 200 questions (mean 308 W for 308 s) at USD 0.1755/kWh",
+      "cost_per_1k_usd": 0.023133596616043865,
+      "counts": {
+        "answerable": 150,
+        "answered": 167,
+        "completion_tokens": 7598,
+        "judge_unparseable": 0,
+        "judged": 167,
+        "prompt_tokens": 260463,
+        "questions": 200,
+        "refused_by_confidence": 0,
+        "refused_by_model": 31,
+        "refused_by_validation": 2,
+        "unanswerable": 50,
+        "validation_rejected": 9
+      },
+      "energy_kwh": 0.026363073066716657,
+      "failed": false,
+      "gpu_mean_power_w": 308.27134275618374,
+      "mode": "bm25",
+      "model": "granite3.3:8b",
+      "p50_latency_ms": 1443.9568405005048,
+      "p95_latency_ms": 2464.1248482491383,
+      "quality": {
+        "answerable_refused": {
+          "confidence": 0.95,
+          "lower": 0.06666666666666667,
+          "n": 150,
+          "point": 0.11333333333333333,
+          "resamples": 1000,
+          "upper": 0.16666666666666666
+        },
+        "citation_precision": {
+          "confidence": 0.95,
+          "lower": 0.7922243107769424,
+          "n": 133,
+          "point": 0.849874686716792,
+          "resamples": 1000,
+          "upper": 0.9050438596491227
+        },
+        "citation_recall": {
+          "confidence": 0.95,
+          "lower": 0.7,
+          "n": 150,
+          "point": 0.7666666666666667,
+          "resamples": 1000,
+          "upper": 0.8333333333333334
+        },
+        "exact_match": {
+          "confidence": 0.95,
+          "lower": 0.28,
+          "n": 150,
+          "point": 0.35333333333333333,
+          "resamples": 1000,
+          "upper": 0.4266666666666667
+        },
+        "f1": {
+          "confidence": 0.95,
+          "lower": 0.48611650299353026,
+          "n": 150,
+          "point": 0.5464097774769203,
+          "resamples": 1000,
+          "upper": 0.6080386292259078
+        },
+        "faithfulness": {
+          "confidence": 0.95,
+          "lower": 0.8203592814371258,
+          "n": 167,
+          "point": 0.874251497005988,
+          "resamples": 1000,
+          "upper": 0.9221556886227545
+        },
+        "refusal_accuracy": {
+          "confidence": 0.95,
+          "lower": 0.2,
+          "n": 50,
+          "point": 0.32,
+          "resamples": 1000,
+          "upper": 0.44049999999999956
+        }
+      },
+      "retrieval": {
+        "ndcg@10": {
+          "confidence": 0.95,
+          "lower": 0.7266543808751945,
+          "n": 150,
+          "point": 0.7824752995122887,
+          "resamples": 1000,
+          "upper": 0.8347076991602012
+        },
+        "ndcg@20": {
+          "confidence": 0.95,
+          "lower": 0.7352575414989007,
+          "n": 150,
+          "point": 0.7902660809621961,
+          "resamples": 1000,
+          "upper": 0.840935029808823
+        },
+        "ndcg@5": {
+          "confidence": 0.95,
+          "lower": 0.7115073043801222,
+          "n": 150,
+          "point": 0.7724883476506794,
+          "resamples": 1000,
+          "upper": 0.8286637003490653
+        },
+        "recall@10": {
+          "confidence": 0.95,
+          "lower": 0.8233333333333334,
+          "n": 150,
+          "point": 0.8766666666666667,
+          "resamples": 1000,
+          "upper": 0.93
+        },
+        "recall@20": {
+          "confidence": 0.95,
+          "lower": 0.8566666666666667,
+          "n": 150,
+          "point": 0.9066666666666666,
+          "resamples": 1000,
+          "upper": 0.95
+        },
+        "recall@5": {
+          "confidence": 0.95,
+          "lower": 0.7865833333333334,
+          "n": 150,
+          "point": 0.8466666666666667,
+          "resamples": 1000,
+          "upper": 0.9033333333333333
+        }
+      }
+    },
+    {
+      "answering_seconds": 286.36746165799923,
+      "cause": null,
+      "config": "hybrid_8b",
+      "cost_basis": "0.02441 kWh GPU energy over 200 questions (mean 307 W for 286 s) at USD 0.1755/kWh",
+      "cost_per_1k_usd": 0.021423999302766766,
+      "counts": {
+        "answerable": 150,
+        "answered": 161,
+        "completion_tokens": 6032,
+        "judge_unparseable": 0,
+        "judged": 161,
+        "prompt_tokens": 230330,
+        "questions": 200,
+        "refused_by_confidence": 23,
+        "refused_by_model": 15,
+        "refused_by_validation": 1,
+        "unanswerable": 50,
+        "validation_rejected": 7
+      },
+      "energy_kwh": 0.02441481402024703,
+      "failed": false,
+      "gpu_mean_power_w": 306.9249905838042,
+      "mode": "hybrid",
+      "model": "granite3.3:8b",
+      "p50_latency_ms": 1456.8290074994366,
+      "p95_latency_ms": 2450.9434848495384,
+      "quality": {
+        "answerable_refused": {
+          "confidence": 0.95,
+          "lower": 0.08666666666666667,
+          "n": 150,
+          "point": 0.14,
+          "resamples": 1000,
+          "upper": 0.2
+        },
+        "citation_precision": {
+          "confidence": 0.95,
+          "lower": 0.8010335917312662,
+          "n": 129,
+          "point": 0.8630490956072352,
+          "resamples": 1000,
+          "upper": 0.9173126614987079
+        },
+        "citation_recall": {
+          "confidence": 0.95,
+          "lower": 0.6633333333333333,
+          "n": 150,
+          "point": 0.7366666666666667,
+          "resamples": 1000,
+          "upper": 0.8000833333333333
+        },
+        "exact_match": {
+          "confidence": 0.95,
+          "lower": 0.31333333333333335,
+          "n": 150,
+          "point": 0.38666666666666666,
+          "resamples": 1000,
+          "upper": 0.4666666666666667
+        },
+        "f1": {
+          "confidence": 0.95,
+          "lower": 0.517323422914617,
+          "n": 150,
+          "point": 0.578564899529767,
+          "resamples": 1000,
+          "upper": 0.6414844462752324
+        },
+        "faithfulness": {
+          "confidence": 0.95,
+          "lower": 0.8881987577639752,
+          "n": 161,
+          "point": 0.9316770186335404,
+          "resamples": 1000,
+          "upper": 0.968944099378882
+        },
+        "refusal_accuracy": {
+          "confidence": 0.95,
+          "lower": 0.22,
+          "n": 50,
+          "point": 0.36,
+          "resamples": 1000,
+          "upper": 0.48
+        }
+      },
+      "retrieval": {
+        "ndcg@10": {
+          "confidence": 0.95,
+          "lower": 0.8046984067711938,
+          "n": 150,
+          "point": 0.8521026298851649,
+          "resamples": 1000,
+          "upper": 0.8944206705798852
+        },
+        "ndcg@20": {
+          "confidence": 0.95,
+          "lower": 0.8103047849785978,
+          "n": 150,
+          "point": 0.8555600136174782,
+          "resamples": 1000,
+          "upper": 0.8971733129808801
+        },
+        "ndcg@5": {
+          "confidence": 0.95,
+          "lower": 0.7846945144760478,
+          "n": 150,
+          "point": 0.8363388947917025,
+          "resamples": 1000,
+          "upper": 0.8838048143726148
+        },
+        "recall@10": {
+          "confidence": 0.95,
+          "lower": 0.9133333333333333,
+          "n": 150,
+          "point": 0.95,
+          "resamples": 1000,
+          "upper": 0.9833333333333333
+        },
+        "recall@20": {
+          "confidence": 0.95,
+          "lower": 0.93,
+          "n": 150,
+          "point": 0.9633333333333334,
+          "resamples": 1000,
+          "upper": 0.9933333333333333
+        },
+        "recall@5": {
+          "confidence": 0.95,
+          "lower": 0.8533333333333334,
+          "n": 150,
+          "point": 0.9033333333333333,
+          "resamples": 1000,
+          "upper": 0.95
+        }
+      }
+    },
+    {
+      "answering_seconds": 327.67287989000033,
+      "cause": null,
+      "config": "hybrid_rerank_8b",
+      "cost_basis": "0.02356 kWh GPU energy over 200 questions (mean 259 W for 328 s) at USD 0.1755/kWh",
+      "cost_per_1k_usd": 0.020672781690546992,
+      "counts": {
+        "answerable": 150,
+        "answered": 153,
+        "completion_tokens": 6440,
+        "judge_unparseable": 0,
+        "judged": 153,
+        "prompt_tokens": 212219,
+        "questions": 200,
+        "refused_by_confidence": 39,
+        "refused_by_model": 6,
+        "refused_by_validation": 2,
+        "unanswerable": 50,
+        "validation_rejected": 9
+      },
+      "energy_kwh": 0.023558725573272928,
+      "failed": false,
+      "gpu_mean_power_w": 258.8295134228188,
+      "mode": "hybrid_rerank",
+      "model": "granite3.3:8b",
+      "p50_latency_ms": 1710.9237845006646,
+      "p95_latency_ms": 3198.441833850937,
+      "quality": {
+        "answerable_refused": {
+          "confidence": 0.95,
+          "lower": 0.11333333333333333,
+          "n": 150,
+          "point": 0.17333333333333334,
+          "resamples": 1000,
+          "upper": 0.23333333333333334
+        },
+        "citation_precision": {
+          "confidence": 0.95,
+          "lower": 0.8400201612903225,
+          "n": 124,
+          "point": 0.8911290322580645,
+          "resamples": 1000,
+          "upper": 0.9381720430107527
+        },
+        "citation_recall": {
+          "confidence": 0.95,
+          "lower": 0.6833333333333333,
+          "n": 150,
+          "point": 0.75,
+          "resamples": 1000,
+          "upper": 0.8166666666666667
+        },
+        "exact_match": {
+          "confidence": 0.95,
+          "lower": 0.2665000000000001,
+          "n": 150,
+          "point": 0.34,
+          "resamples": 1000,
+          "upper": 0.41349999999999987
+        },
+        "f1": {
+          "confidence": 0.95,
+          "lower": 0.4574900612038234,
+          "n": 150,
+          "point": 0.5223584418587417,
+          "resamples": 1000,
+          "upper": 0.5888250162281433
+        },
+        "faithfulness": {
+          "confidence": 0.95,
+          "lower": 0.8954248366013072,
+          "n": 153,
+          "point": 0.934640522875817,
+          "resamples": 1000,
+          "upper": 0.9738562091503268
+        },
+        "refusal_accuracy": {
+          "confidence": 0.95,
+          "lower": 0.28,
+          "n": 50,
+          "point": 0.42,
+          "resamples": 1000,
+          "upper": 0.56
+        }
+      },
+      "retrieval": {
+        "ndcg@10": {
+          "confidence": 0.95,
+          "lower": 0.9032077011750925,
+          "n": 150,
+          "point": 0.9387577102360539,
+          "resamples": 1000,
+          "upper": 0.9697654620588295
+        },
+        "ndcg@20": {
+          "confidence": 0.95,
+          "lower": 0.9032077011750925,
+          "n": 150,
+          "point": 0.9387577102360539,
+          "resamples": 1000,
+          "upper": 0.9697654620588295
+        },
+        "ndcg@5": {
+          "confidence": 0.95,
+          "lower": 0.8987809901527388,
+          "n": 150,
+          "point": 0.9365354880138316,
+          "resamples": 1000,
+          "upper": 0.9682315545798601
+        },
+        "recall@10": {
+          "confidence": 0.95,
+          "lower": 0.93,
+          "n": 150,
+          "point": 0.9633333333333334,
+          "resamples": 1000,
+          "upper": 0.9933333333333333
+        },
+        "recall@20": {
+          "confidence": 0.95,
+          "lower": 0.93,
+          "n": 150,
+          "point": 0.9633333333333334,
+          "resamples": 1000,
+          "upper": 0.9933333333333333
+        },
+        "recall@5": {
+          "confidence": 0.95,
+          "lower": 0.92,
+          "n": 150,
+          "point": 0.9566666666666667,
+          "resamples": 1000,
+          "upper": 0.9866666666666667
+        }
+      }
+    },
+    {
+      "answering_seconds": 332.70410492500014,
+      "cause": null,
+      "config": "hybrid_rerank_2b",
+      "cost_basis": "0.01440 kWh GPU energy over 200 questions (mean 156 W for 333 s) at USD 0.1755/kWh",
+      "cost_per_1k_usd": 0.01263973104239332,
+      "counts": {
+        "answerable": 150,
+        "answered": 106,
+        "completion_tokens": 5183,
+        "judge_unparseable": 0,
+        "judged": 106,
+        "prompt_tokens": 212219,
+        "questions": 200,
+        "refused_by_confidence": 39,
+        "refused_by_model": 27,
+        "refused_by_validation": 28,
+        "unanswerable": 50,
+        "validation_rejected": 33
+      },
+      "energy_kwh": 0.01440425190016333,
+      "failed": false,
+      "gpu_mean_power_w": 155.8601353965184,
+      "mode": "hybrid_rerank",
+      "model": "granite3.3:2b",
+      "p50_latency_ms": 1409.4589520000227,
+      "p95_latency_ms": 3653.964055100003,
+      "quality": {
+        "answerable_refused": {
+          "confidence": 0.95,
+          "lower": 0.31333333333333335,
+          "n": 150,
+          "point": 0.3933333333333333,
+          "resamples": 1000,
+          "upper": 0.4666666666666667
+        },
+        "citation_precision": {
+          "confidence": 0.95,
+          "lower": 0.6043956043956044,
+          "n": 91,
+          "point": 0.6923076923076923,
+          "resamples": 1000,
+          "upper": 0.7912087912087912
+        },
+        "citation_recall": {
+          "confidence": 0.95,
+          "lower": 0.33666666666666667,
+          "n": 150,
+          "point": 0.41333333333333333,
+          "resamples": 1000,
+          "upper": 0.49
+        },
+        "exact_match": {
+          "confidence": 0.95,
+          "lower": 0.19333333333333333,
+          "n": 150,
+          "point": 0.26,
+          "resamples": 1000,
+          "upper": 0.3333333333333333
+        },
+        "f1": {
+          "confidence": 0.95,
+          "lower": 0.32068579184395146,
+          "n": 150,
+          "point": 0.38439690316702213,
+          "resamples": 1000,
+          "upper": 0.4552829554623991
+        },
+        "faithfulness": {
+          "confidence": 0.95,
+          "lower": 0.6698113207547169,
+          "n": 106,
+          "point": 0.7547169811320755,
+          "resamples": 1000,
+          "upper": 0.8301886792452831
+        },
+        "refusal_accuracy": {
+          "confidence": 0.95,
+          "lower": 0.56,
+          "n": 50,
+          "point": 0.7,
+          "resamples": 1000,
+          "upper": 0.82
+        }
+      },
+      "retrieval": {
+        "ndcg@10": {
+          "confidence": 0.95,
+          "lower": 0.9032077011750925,
+          "n": 150,
+          "point": 0.9387577102360539,
+          "resamples": 1000,
+          "upper": 0.9697654620588295
+        },
+        "ndcg@20": {
+          "confidence": 0.95,
+          "lower": 0.9032077011750925,
+          "n": 150,
+          "point": 0.9387577102360539,
+          "resamples": 1000,
+          "upper": 0.9697654620588295
+        },
+        "ndcg@5": {
+          "confidence": 0.95,
+          "lower": 0.8987809901527388,
+          "n": 150,
+          "point": 0.9365354880138316,
+          "resamples": 1000,
+          "upper": 0.9682315545798601
+        },
+        "recall@10": {
+          "confidence": 0.95,
+          "lower": 0.93,
+          "n": 150,
+          "point": 0.9633333333333334,
+          "resamples": 1000,
+          "upper": 0.9933333333333333
+        },
+        "recall@20": {
+          "confidence": 0.95,
+          "lower": 0.93,
+          "n": 150,
+          "point": 0.9633333333333334,
+          "resamples": 1000,
+          "upper": 0.9933333333333333
+        },
+        "recall@5": {
+          "confidence": 0.95,
+          "lower": 0.92,
+          "n": 150,
+          "point": 0.9566666666666667,
+          "resamples": 1000,
+          "upper": 0.9866666666666667
+        }
+      }
+    }
+  ],
+  "electricity_source": "U.S. EIA, Electric Power Monthly Table 5.6.A, Virginia residential average price, 17.55 cents/kWh for July 2026 (preliminary; released 2026-09-24), https://www.eia.gov/electricity/monthly/epm_table_grapher.php?t=epmt_5_6_a, read 2026-10-17.",
+  "electricity_usd_per_kwh": 0.1755,
+  "energy_scope": "GPU board power from nvidia-smi only; CPU, RAM, and the rest of the PC are not measured.",
+  "judge_model": "granite3.3:8b",
+  "questions": 200,
+  "resamples": 1000,
+  "stamp": {
+    "command": "python scripts/run_experiments.py",
+    "commit": "2b73f2e91c7fc7213aabcfa9cb0ae0a6c54c9e08",
+    "seed": 1234
+  },
+  "thresholds": {
+    "bm25": 0.0,
+    "hybrid": 0.433911,
+    "hybrid_rerank": 0.909174
+  },
+  "unanswerable": 50
+}
