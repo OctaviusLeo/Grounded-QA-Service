@@ -116,7 +116,7 @@ flowchart TB
   - Write `gqa/ingest.py` with the `Passage` dataclass, `Chunker` (delegating window splitting to Rag_Lite's `chunk_text`), `passage_id_for(doc_id, chunk_index, text)` (stable function of normalized text), and `find_duplicate_ids` returning `{duplicated_id: count}`.
   - _Requirements: 2.1, 2.2_
 
-- [ ] 2.2 Write property test for Passage_ID stability and uniqueness
+- [x] 2.2 Write property test for Passage_ID stability and uniqueness
   - **Property 4: Passage_ID stability and uniqueness** — chunk twice, assert identical `{passage_id: text}` maps; distinct passages get distinct IDs or collisions are reported with counts.
   - **Validates: Requirements 2.2**
 
