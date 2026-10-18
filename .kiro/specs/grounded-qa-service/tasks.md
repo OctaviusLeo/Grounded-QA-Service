@@ -194,7 +194,7 @@ flowchart TB
   - Write `gqa/parser.py` with `ParsedAnswer` and `parse_answer`, extracting cited Passage_IDs via the documented citation syntax (`[<passage_id>]`, several IDs separated by commas allowed) and detecting the exact refusal text.
   - _Requirements: 4.3_
 
-- [ ] 3.7 Write unit tests for answer parsing
+- [x] 3.7 Write unit tests for answer parsing
   - Test extraction of zero, one, and many citations and malformed-marker handling.
   - _Requirements: 4.3_
 
