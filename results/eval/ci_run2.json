@@ -1,0 +1,140 @@
+{
+  "counts": {
+    "answerable": 24,
+    "answered": 22,
+    "completion_tokens": 899,
+    "judge_unparseable": 0,
+    "judged": 22,
+    "prompt_tokens": 33827,
+    "questions": 30,
+    "refused_by_confidence": 5,
+    "refused_by_model": 3,
+    "refused_by_validation": 0,
+    "unanswerable": 6,
+    "validation_rejected": 2
+  },
+  "input_problems": [],
+  "judge_model": "granite3.3:8b",
+  "latency": {
+    "mean_ms": 931.4827115001511,
+    "n": 30,
+    "p50_ms": 775.5731425004342,
+    "p95_ms": 1444.1555777504614
+  },
+  "metrics": {
+    "answerable_refused": {
+      "confidence": 0.95,
+      "lower": 0.041666666666666664,
+      "n": 24,
+      "point": 0.20833333333333334,
+      "resamples": 1000,
+      "upper": 0.375
+    },
+    "citation_precision": {
+      "confidence": 0.95,
+      "lower": 0.4868421052631579,
+      "n": 19,
+      "point": 0.6973684210526315,
+      "resamples": 1000,
+      "upper": 0.8947368421052632
+    },
+    "citation_recall": {
+      "confidence": 0.95,
+      "lower": 0.375,
+      "n": 24,
+      "point": 0.5625,
+      "resamples": 1000,
+      "upper": 0.75
+    },
+    "exact_match": {
+      "confidence": 0.95,
+      "lower": 0.16562500000000094,
+      "n": 24,
+      "point": 0.3333333333333333,
+      "resamples": 1000,
+      "upper": 0.5416666666666666
+    },
+    "f1": {
+      "confidence": 0.95,
+      "lower": 0.3911817436662638,
+      "n": 24,
+      "point": 0.5447794150580528,
+      "resamples": 1000,
+      "upper": 0.7190276572842362
+    },
+    "faithfulness": {
+      "confidence": 0.95,
+      "lower": 0.5454545454545454,
+      "n": 22,
+      "point": 0.7272727272727273,
+      "resamples": 1000,
+      "upper": 0.9090909090909091
+    },
+    "ndcg@10": {
+      "confidence": 0.95,
+      "lower": 0.8632579018078299,
+      "n": 24,
+      "point": 0.9363503398255958,
+      "resamples": 1000,
+      "upper": 0.9948839714724187
+    },
+    "ndcg@20": {
+      "confidence": 0.95,
+      "lower": 0.8632579018078299,
+      "n": 24,
+      "point": 0.9363503398255958,
+      "resamples": 1000,
+      "upper": 0.9948839714724187
+    },
+    "ndcg@5": {
+      "confidence": 0.95,
+      "lower": 0.8237501906688509,
+      "n": 24,
+      "point": 0.9224614509367068,
+      "resamples": 1000,
+      "upper": 0.9948839714724187
+    },
+    "recall@10": {
+      "confidence": 0.95,
+      "lower": 1.0,
+      "n": 24,
+      "point": 1.0,
+      "resamples": 1000,
+      "upper": 1.0
+    },
+    "recall@20": {
+      "confidence": 0.95,
+      "lower": 1.0,
+      "n": 24,
+      "point": 1.0,
+      "resamples": 1000,
+      "upper": 1.0
+    },
+    "recall@5": {
+      "confidence": 0.95,
+      "lower": 0.875,
+      "n": 24,
+      "point": 0.9583333333333334,
+      "resamples": 1000,
+      "upper": 1.0
+    },
+    "refusal_accuracy": {
+      "confidence": 0.95,
+      "lower": 0.16666666666666666,
+      "n": 6,
+      "point": 0.5,
+      "resamples": 1000,
+      "upper": 0.8333333333333334
+    }
+  },
+  "mode": "hybrid_rerank",
+  "model": "granite3.3:2b",
+  "questions_file": "data/evalset.jsonl",
+  "stamp": {
+    "command": "python -m gqa.eval --config config/default.yaml --seed 1234 --mode hybrid_rerank --model granite3.3:2b --subset ci --out results/eval/ci_run2.json",
+    "commit": "0ba9ae5a113f697bca3c108461d5078ed2c40e1f",
+    "seed": 1234
+  },
+  "subset": "ci",
+  "threshold": 0.909174
+}

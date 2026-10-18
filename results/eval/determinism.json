@@ -1,0 +1,22 @@
+{
+  "excluded": [
+    "generation_ms",
+    "latency",
+    "latency_ms",
+    "retrieval_ms",
+    "stamp"
+  ],
+  "identical": true,
+  "metric_differences": [],
+  "record_difference_count": 0,
+  "record_differences": [],
+  "runs": [
+    "results/eval/ci_run1.json",
+    "results/eval/ci_run2.json"
+  ],
+  "stamp": {
+    "command": "python scripts/compare_runs.py results/eval/ci_run1.json results/eval/ci_run2.json",
+    "commit": "0ba9ae5a113f697bca3c108461d5078ed2c40e1f",
+    "seed": 1234
+  }
+}

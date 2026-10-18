@@ -268,11 +268,11 @@ flowchart TB
   - Pending labels yield "not computed: owner labels pending"; complete labels yield kappa; malformed labels are rejected with the line number.
   - _Requirements: 7.5, 7.9_
 
-- [ ] 4.10 Run the harness twice on the CI subset
+- [x] 4.10 Run the harness twice on the CI subset
   - With `granite3.3:2b`, run `python -m gqa.eval` twice with the same seed on the 30-question CI subset; compare the metric files (Req 7.8, model-provider nondeterminism documented if any value differs).
   - _Requirements: 7.7, 7.8_
 
-- [ ] 4.11 M3 gate
+- [x] 4.11 M3 gate
   - `bash scripts/gate_m3.sh`: unit suite + coverage pass; both harness outputs exist and are stamped. Push.
 
 ## M4 — Configuration experiments, Results_Table, injection test
