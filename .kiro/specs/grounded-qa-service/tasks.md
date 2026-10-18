@@ -120,7 +120,7 @@ flowchart TB
   - **Property 4: Passage_ID stability and uniqueness** — chunk twice, assert identical `{passage_id: text}` maps; distinct passages get distinct IDs or collisions are reported with counts.
   - **Validates: Requirements 2.2**
 
-- [ ] 2.3 Write unit tests for chunker and duplicate detection
+- [x] 2.3 Write unit tests for chunker and duplicate detection
   - Cover overlap handling, empty documents, and duplicate-ID reporting output.
   - _Requirements: 2.2_
 
