@@ -370,7 +370,7 @@ flowchart TB
   - Write `.github/workflows/ci.yml`: on pushes to `main` and PRs targeting it, job `unit` (GitHub-hosted) runs `bash scripts/test_unit.sh`; job `quality` (self-hosted `gpu`, needs `unit`) starts the `ollama` service, evaluates the CI subset, and runs `scripts/ci_gate.py`; the run fails if any unit test fails or the gate reports failure.
   - _Requirements: 10.1, 10.4_
 
-- [ ] 6.11 Implement the README number-traceability check
+- [x] 6.11 Implement the README number-traceability check
   - Write `gqa/readme_check.py` + `scripts/check_readme.py` that verifies every number in the README traces to `results/summary.md` or another script-generated file (generated blocks, or numbers in an allow-list of non-measurement contexts such as requirement IDs, versions, ports, and commands); report each untraceable number and exit with a failed status when any exist.
   - _Requirements: 11.4, 11.5_
 
