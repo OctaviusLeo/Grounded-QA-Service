@@ -152,7 +152,7 @@ flowchart TB
   - **Property 6: Empty retrieval on no match** — disjoint-vocabulary query returns `[]` and raises nothing.
   - **Validates: Requirements 3.4**
 
-- [ ] 2.11 Implement the metric core and the bootstrap confidence interval
+- [x] 2.11 Implement the metric core and the bootstrap confidence interval
   - Write `gqa/metrics.py` with `recall_at_k` and `ndcg_at_k` (delegating to Rag_Lite's IR metrics after truncation to `k`) and `bootstrap_ci` producing `BootstrapCI{point, lower, upper}` from >=1000 resamples at 95% confidence, deterministic under a fixed seed.
   - _Requirements: 3.3, 7.1, 7.6_
 
