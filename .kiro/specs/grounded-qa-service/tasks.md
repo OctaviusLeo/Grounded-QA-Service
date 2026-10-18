@@ -223,11 +223,11 @@ flowchart TB
   - **Property 3: Refusal below confidence threshold** — `confidence < threshold` ⟹ `refused`, `text == REFUSAL_TEXT`, and the model is not invoked (mock `ModelClient`).
   - **Validates: Requirements 4.4, 4.5**
 
-- [ ] 3.14 Tune the thresholds and run the live pipeline check
+- [x] 3.14 Tune the thresholds and run the live pipeline check
   - Run `scripts/tune_thresholds.py` (background job) and commit `config/thresholds.yaml`. Then `scripts/pipeline_check.py`: run 5 tuning-split questions through the real pipeline with `granite3.3:2b` and assert every returned Answer is a Refusal or cites only retrieved IDs. Output goes to `~/gqa-runs` (not a reported number).
   - _Requirements: 4.1, 4.3, 5.3_
 
-- [ ] 3.15 M2 gate
+- [x] 3.15 M2 gate
   - `bash scripts/gate_m2.sh`: unit suite + coverage pass, thresholds file is stamped and in `[0,1]`, live check passed. Push.
 
 ## M3 — Evaluation harness, LLM judge, label packet

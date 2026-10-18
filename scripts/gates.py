@@ -74,7 +74,24 @@ def gate_m1() -> None:
     check(all(ci["resamples"] >= 1000 for mode in base["modes"].values() for ci in mode.values()), "baseline CIs use >= 1000 resamples")
 
 
-GATES = {"m0": gate_m0, "m1": gate_m1}
+def gate_m2() -> None:
+    import os
+
+    import yaml
+
+    data = yaml.safe_load(Path("config/thresholds.yaml").read_text(encoding="utf-8"))
+    st = data.get("stamp", {})
+    check(bool(re.fullmatch(r"[0-9a-f]{40}", st.get("commit", ""))) and commit_exists(st["commit"]), "thresholds stamped with an existing commit")
+    th = data.get("thresholds", {})
+    check(set(th) == {"bm25", "hybrid", "hybrid_rerank"} and all(0.0 <= float(v) <= 1.0 for v in th.values()),
+          "a tuned threshold in [0, 1] for every mode", str(th))
+    check(data.get("tuning_split") == "data/tuning.jsonl", "thresholds tuned on the tuning split")
+    runs = Path(os.environ.get("GQA_RUNS", Path.home() / "gqa-runs"))
+    live = json.loads((runs / "pipeline_check.json").read_text(encoding="utf-8")) if (runs / "pipeline_check.json").exists() else []
+    check(len(live) == 5 and all(r["ok"] for r in live), "live pipeline check: 5 answers, each a refusal or citing only retrieved passages")
+
+
+GATES = {"m0": gate_m0, "m1": gate_m1, "m2": gate_m2}
 
 if __name__ == "__main__":
     for name in sys.argv[1:]:
