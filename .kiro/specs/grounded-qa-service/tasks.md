@@ -321,7 +321,7 @@ flowchart TB
   - Commit, then run `scripts/injection_test.py` (hybrid+rerank + 8B); write `results/injection.json`.
   - _Requirements: 6.2, 6.4, 6.5_
 
-- [ ] 5.12 Generate the label packet and the Results_Table
+- [x] 5.12 Generate the label packet and the Results_Table
   - Run `scripts/make_label_packet.py`, then `scripts/write_results_table.py`.
   - _Requirements: 7.5, 8.3_
 
