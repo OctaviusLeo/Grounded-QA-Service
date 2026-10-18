@@ -91,7 +91,7 @@ flowchart TB
   - Missing-secret fail-fast (raises before any HTTP call, names the variable), timeout surfacing as a typed error, streaming reassembly, against a fake HTTP transport.
   - _Requirements: 0.13, 1.6, 9.9_
 
-- [ ] 1.3 Implement GPU telemetry helpers
+- [x] 1.3 Implement GPU telemetry helpers
   - Write `gqa/gpu.py`: parse `nvidia-smi` total/used memory (MiB) and power draw (W), and a background sampler that records the peak memory and mean power between start and stop. Unit tests use canned `nvidia-smi` output.
   - _Requirements: 1.1, 1.3_
 
