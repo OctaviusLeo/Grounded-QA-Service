@@ -128,7 +128,7 @@ flowchart TB
   - Write `gqa/squad.py` (download with SHA-256 check into `~/gqa-data`) and `scripts/build_corpus.py`, which chunks every SQuAD 2.0 dev context into `data/corpus/passages.jsonl`, verifies no duplicate Passage_IDs, and writes a stamped manifest. Record the source and license (CC BY-SA 4.0) in `THIRD_PARTY.md`.
   - _Requirements: 2.1, 2.2, 0.8_
 
-- [ ] 2.5 Implement the Evaluation_Set schema, loader, and gold-ID validator
+- [x] 2.5 Implement the Evaluation_Set schema, loader, and gold-ID validator
   - Write `gqa/evalset.py` with the `EvalQuestion` dataclass and a validator that checks: >=150 questions, >=20 Unanswerable_Questions (no gold IDs), each answerable question has >=1 gold Passage_ID, and every gold Passage_ID resolves to an existing Passage (reporting each unresolved ID and the total count).
   - _Requirements: 2.3, 2.4, 2.6_
 
