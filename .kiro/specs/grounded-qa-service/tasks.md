@@ -4,7 +4,7 @@
 
 This plan converts the approved design into incremental coding tasks, organized by milestone M0–M5. The run is unattended: the agent implements every task (there are no `[ME]` tasks and no optional tasks), and each milestone ends with an automated gate script (`scripts/gate_m<N>.sh`) instead of an owner review stop. A problem that survives 3 fix attempts for the same cause is written to `docs/BLOCKERS.md` and that task stops. The one thing the agent cannot honestly do is write the owner's 50 faithfulness labels (Requirement 7.5); the run prepares a labeling packet and `scripts/finalize_owner_labels.ps1`, and every gate accepts "not computed: owner labels pending" until the owner runs it.
 
-Every reported number is produced by a repository script that records its generating command, seed, and full 40-character commit hash; results tables are generated files, never hand-edited, and result scripts refuse to run on a dirty tree (generated paths `results/`, `docs/media/`, `data/`, `.kiro/` excluded). Unit tests (>=80% statement coverage per non-trivial module) and Hypothesis property-based tests (one per Correctness Property in `design.md`) run from `bash scripts/test_unit.sh`.
+Every reported number is produced by a repository script that records its generating command, seed, and full 40-character commit hash; results tables are generated files, never hand-edited, and result scripts refuse to run on a dirty tree (generated paths `results/`, `docs/media/`, `.kiro/` excluded). Unit tests (>=80% statement coverage per non-trivial module) and Hypothesis property-based tests (one per Correctness Property in `design.md`) run from `bash scripts/test_unit.sh`.
 
 Fixed decisions (see `design.md` § Technology Choices):
 - Implementation language: **Python 3.12** (satisfies "3.11 or newer"), environment managed by `uv` with a lockfile; CPU-only PyTorch for Rag_Lite's dense embedder and cross-encoder.
@@ -69,7 +69,7 @@ flowchart TB
   - Create `docs/ENVIRONMENT.md` and `THIRD_PARTY.md` with section headers. Initialise Git on `main`, add the remote, commit, and push.
   - _Requirements: 0.9, 0.10, 0.11, 0.12_
 
-- [ ] 0.2 Implement the shared reproducibility helper
+- [x] 0.2 Implement the shared reproducibility helper
   - Write `gqa/repro.py`: 40-character commit hash via `git rev-parse HEAD`, `require_clean_tree()` (generated paths excluded), a `Stamp{command, seed, commit}` struct, and a serializer/markdown renderer used by every result-emitting script.
   - _Requirements: 0.1, 0.2, 0.4_
 
