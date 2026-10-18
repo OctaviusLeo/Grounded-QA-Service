@@ -132,7 +132,7 @@ flowchart TB
   - Write `gqa/evalset.py` with the `EvalQuestion` dataclass and a validator that checks: >=150 questions, >=20 Unanswerable_Questions (no gold IDs), each answerable question has >=1 gold Passage_ID, and every gold Passage_ID resolves to an existing Passage (reporting each unresolved ID and the total count).
   - _Requirements: 2.3, 2.4, 2.6_
 
-- [ ] 2.6 Write unit tests for evaluation-set validation
+- [x] 2.6 Write unit tests for evaluation-set validation
   - Test the count thresholds, unanswerable labeling, and unresolved-gold-ID reporting path.
   - _Requirements: 2.3, 2.4, 2.6_
 
