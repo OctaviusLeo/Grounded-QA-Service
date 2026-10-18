@@ -338,7 +338,7 @@ flowchart TB
   - **Property 14: Request identifier propagation** — every log entry for a request shares its id; ids are unique across requests.
   - **Validates: Requirements 9.4, 9.5**
 
-- [ ] 6.3 Write unit/integration tests for the service
+- [x] 6.3 Write unit/integration tests for the service
   - Invalid/empty/oversized query rejection (Req 9.2); metrics endpoint shape (Req 9.6); streaming first-chunk + reassembly (Req 9.3); missing-secret start-up failure (Req 9.9).
   - _Requirements: 9.2, 9.3, 9.6, 9.9_
 
