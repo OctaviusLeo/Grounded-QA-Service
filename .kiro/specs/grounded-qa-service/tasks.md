@@ -382,7 +382,7 @@ flowchart TB
   - `scripts/make_demo_gif.py`: with the Compose stack running, send real questions to `/answer/stream` (one answered, one refused), capture the chunks with their arrival times, and render them into `docs/media/demo.gif`.
   - _Requirements: 11.1_
 
-- [ ] 6.14 Assemble the README from generated sources with the documented commands
+- [x] 6.14 Assemble the README from generated sources with the documented commands
   - `scripts/render_readme.py` fills generated blocks of `README.md` from `results/summary.md` (Results_Table with a CI per metric, stamps). The agent writes the prose: architecture diagram and explanation, run instructions with the exact single command per test suite and per reported result, the exact single `docker compose up` command (matching 6.4), cost-and-latency trade-offs, known limitations, and the demo GIF reference. `scripts/check_readme.py` passes.
   - _Requirements: 11.1, 11.2, 11.3, 0.11_
 
