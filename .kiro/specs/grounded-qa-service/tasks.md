@@ -202,11 +202,11 @@ flowchart TB
   - Write `gqa/validate.py` with `ValidationResult` and `CitationValidator.validate`: accept iff every cited ID is retrieved and every sentence carries a citation; report `offending == cited − retrieved`; on reject, return a corrected Answer (only sentences whose citations are all retrieved) or a Refusal.
   - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
-- [ ] 3.9 Write property test for citation soundness (validation decision)
+- [x] 3.9 Write property test for citation soundness (validation decision)
   - **Property 1: Citation soundness** — `accepted == (cited ⊆ retrieved and no_uncited_claim)` and `offending == cited − retrieved`.
   - **Validates: Requirements 4.3, 5.1, 5.2, 5.4**
 
-- [ ] 3.10 Write property test for no uncited claims after validation
+- [x] 3.10 Write property test for no uncited claims after validation
   - **Property 2: No uncited claims after validation** — final response is a Refusal or an Answer whose citations ⊆ retrieved.
   - **Validates: Requirements 5.3**
 
