@@ -214,7 +214,7 @@ flowchart TB
   - Accept when all cited IDs retrieved; reject when at least one ID is outside the retrieved set.
   - _Requirements: 5.5_
 
-- [ ] 3.12 Wire the `AnsweringPipeline` together
+- [x] 3.12 Wire the `AnsweringPipeline` together
   - Write `gqa/pipeline.py` with `Answer`, `REFUSAL_TEXT`, and `AnsweringPipeline.answer` orchestrating retrieve -> confidence -> (refuse | prompt -> model -> parse -> validate), returning Answer / corrected Answer / Refusal, plus a sentence-validated streaming variant for the service.
   - _Requirements: 4.1, 4.3, 4.4, 4.5, 5.3_
 
