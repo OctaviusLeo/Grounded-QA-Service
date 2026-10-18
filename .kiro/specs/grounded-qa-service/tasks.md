@@ -174,7 +174,7 @@ flowchart TB
   - Write `gqa/confidence.py` with `estimate_confidence` (0.0 for empty retrieval; otherwise the top score mapped into `[0,1]`: the logistic of the cross-encoder logit for rerank modes, the clipped fused score otherwise) and `should_refuse(confidence, threshold)`.
   - _Requirements: 4.4, 4.6_
 
-- [ ] 3.2 Write unit tests for confidence and threshold-in-config
+- [x] 3.2 Write unit tests for confidence and threshold-in-config
   - Test empty retrieval maps to 0.0, outputs lie in `[0,1]`, and the threshold is read from config in `[0,1]`.
   - _Requirements: 4.4, 4.6_
 
