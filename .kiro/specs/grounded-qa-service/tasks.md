@@ -87,7 +87,7 @@ flowchart TB
   - Write `gqa/model_client.py` reading the API key from `os.environ[api_key_env]`; if required and unset/empty, raise `MissingSecretError` naming the variable before any request. Enforce a request timeout and support `complete` (returns text and token usage) and `stream`. Temperature 0 and a fixed seed are sent with every request.
   - _Requirements: 1.6, 0.13_
 
-- [ ] 1.2 Write unit tests for `ModelClient` secret and timeout handling
+- [x] 1.2 Write unit tests for `ModelClient` secret and timeout handling
   - Missing-secret fail-fast (raises before any HTTP call, names the variable), timeout surfacing as a typed error, streaming reassembly, against a fake HTTP transport.
   - _Requirements: 0.13, 1.6, 9.9_
 
