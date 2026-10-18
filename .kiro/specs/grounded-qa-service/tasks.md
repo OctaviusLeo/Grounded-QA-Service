@@ -236,7 +236,7 @@ flowchart TB
   - Add `exact_match`, `token_f1` (SQuAD normalization, max over gold answers), `citation_precision`, `citation_recall`, `refusal_accuracy` (all `[0,1]`), `cohen_kappa` (`[-1,1]`), and `percentile` to `gqa/metrics.py`.
   - _Requirements: 7.2, 7.3, 7.4, 7.5_
 
-- [ ] 4.2 Write property test for metric ranges and identity cases
+- [x] 4.2 Write property test for metric ranges and identity cases
   - **Property 7: Metric ranges** — all fractions in `[0,1]`, kappa in `[-1,1]`; identical pred/gold give EM and F1 = 1.0; identical label sequences give kappa = 1.0.
   - **Validates: Requirements 3.3, 7.1, 7.2, 7.3, 7.4, 7.5**
 
