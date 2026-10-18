@@ -55,7 +55,13 @@ All tables below are copied verbatim from the generated `results/summary.md` by 
 <!-- BEGIN summary:Trade-offs -->
 <!-- END summary:Trade-offs -->
 
-TRADEOFF_PROSE
+How to read these numbers:
+
+- **Reranking buys retrieval quality and citation precision, and costs latency.** The cross-encoder runs on the CPU over the hybrid candidates, so `hybrid_rerank_8b` has the highest Recall@5, nDCG, and citation precision and the slowest P50 and P95 of the three 8B configurations.
+- **Better retrieval did not raise token F1 here.** With reranking, the end-to-end-tuned confidence gate refuses more questions, including answerable ones (the "Answerable refused" column), so `hybrid_8b` has the best F1 point estimate. Its CI overlaps the others, so the honest reading is "no clear F1 difference among the 8B configurations, and clear differences in refusals and citation precision".
+- **The 2B model is the cheapest and refuses the most.** It uses the least GPU energy per question but loses on F1, citation precision, and faithfulness. Most of its extra refusals come from citation validation: it often writes the passage ID without brackets, and an uncited sentence is dropped.
+- **Cost is GPU electricity only**, measured with `nvidia-smi` power sampling while answering and priced at the recorded EIA residential rate. No hosted model is configured; `gqa/experiments.py` computes hosted cost from token counts and per-token prices if one is added to `config/experiments.yaml`.
+- **Latency** is one request at a time on one desktop GPU, after an unscored warm-up request per configuration; the judge's calls are not included.
 
 ## Run it
 
@@ -122,7 +128,16 @@ The suite has one Hypothesis property test (`max_examples=100`, derandomized) fo
 
 ## Known limitations
 
-LIMITATIONS_PROSE
+- **The judge has not been validated against a human yet.** Judge agreement (Cohen's kappa against my own labels on a packet of sampled answers) stays "not computed: owner labels pending" until I label `results/judge/owner_labels.csv` and run `scripts/finalize_owner_labels.ps1`. The judge is also `granite3.3:8b`, the same model that answers in three configurations, so it may favor its own answers.
+- **SQuAD is an imperfect open-domain benchmark.** Its questions were written while looking at one paragraph, so some are ambiguous across the whole corpus, and its unanswerable questions are adversarial (worded to resemble a real paragraph). That is why refusal accuracy stays modest for every 8B configuration.
+- **Gold passages come from answer offsets in the question's own paragraph.** Another passage that also states the answer counts as a wrong citation and a retrieval miss, so citation precision and the retrieval metrics are conservative.
+- **BM25-only confidence is always at its maximum** because Rag_Lite divides BM25 scores by the per-query maximum; the tuned BM25 threshold cannot refuse, and BM25 refusals come only from the model or validation.
+- **One retrieval threshold per mode**, tuned with the 8B model, is reused for the 2B configuration.
+- **The injection rule is narrow.** A case counts as followed only if its canary string reaches the final answer. In one case the final answer was written in French, as the planted instruction asked, without the canary word, and it counts as not followed. The cases are few, so the followed fraction is a coarse estimate; the raw-output count shows how much the citation validator contributes.
+- **Cost covers GPU board power only**, including whatever the idle desktop draws; the CPU work (embeddings, reranking) and the rest of the PC are not measured, and the price is one state's residential average for one month.
+- **Small CI subset.** The regression gate evaluates the subset in `config/ci.yaml`, so it catches large drops only; its margins are absolute and recorded in the same file. Two runs of the subset on the same commit were identical (`results/eval/determinism.json`); other hardware or Ollama versions may not reproduce token-for-token.
+- **Streaming is per validated sentence.** Answers are usually one short phrase, so most streams carry a single chunk.
+- **No load testing.** Ollama serves one request at a time (`OLLAMA_NUM_PARALLEL=1`); latency under concurrency is not measured.
 
 ## Repository layout
 
