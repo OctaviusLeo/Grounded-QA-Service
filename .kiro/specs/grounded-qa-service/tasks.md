@@ -260,7 +260,7 @@ flowchart TB
   - Malformed-input "not computed" path, and that the harness runs non-interactively from one command with stub components.
   - _Requirements: 7.7, 7.9_
 
-- [ ] 4.8 Implement the owner labeling packet and finalize script
+- [x] 4.8 Implement the owner labeling packet and finalize script
   - Write `scripts/make_label_packet.py` (50 seeded samples from the large-model hybrid+rerank run: question, answer, cited passage text, sample id; writes `results/judge/label_packet.md`, `results/judge/samples.jsonl`, and `results/judge/owner_labels.csv` with empty labels) and `scripts/finalize_owner_labels.ps1` + `scripts/finalize_owner_labels.py` (validate 50 labels in {0,1}, commit labels, compute kappa with CI, regenerate `results/summary.md` and the README, commit, push).
   - _Requirements: 7.5, 0.1_
 
