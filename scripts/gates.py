@@ -51,7 +51,30 @@ def gate_m0() -> None:
         check(needle in tp, f"THIRD_PARTY.md lists {needle}")
 
 
-GATES = {"m0": gate_m0}
+def gate_m1() -> None:
+    from gqa.evalset import load_questions, validate
+    from gqa.ingest import find_duplicate_ids, read_passages
+    from gqa.squad import sha256_of
+
+    manifest = stamped("data/corpus/manifest.json")
+    passages = read_passages("data/corpus/passages.jsonl")
+    check(not find_duplicate_ids(passages), "corpus has no duplicate Passage_IDs", f"{len(passages)} passages")
+    check(sha256_of(Path("data/corpus/passages.jsonl")) == manifest["passages_sha256"], "corpus file matches its manifest")
+    ids = {p.passage_id for p in passages}
+    evalset, tuning = load_questions("data/evalset.jsonl"), load_questions("data/tuning.jsonl")
+    for name, qs, mins in (("Evaluation_Set", evalset, (150, 20)), ("tuning split", tuning, (100, 20))):
+        report = validate(qs, ids, *mins)
+        check(report.ok, f"{name} validates", "; ".join(report.lines()))
+    check(not ({q.question_id for q in evalset} & {q.question_id for q in tuning}), "tuning split is disjoint from the Evaluation_Set")
+    stamped("data/evalset_manifest.json")
+    base = stamped("results/retrieval_baseline.json")
+    values = [v for mode in base["modes"].values() for ci in mode.values() for v in (ci["point"], ci["lower"], ci["upper"])]
+    check(bool(values) and all(0.0 <= v <= 1.0 for v in values), "every retrieval baseline value is in [0, 1]", f"{len(values)} values")
+    check(set(base["modes"]) == {"bm25", "hybrid", "hybrid_rerank"} and base["ks"] == [5, 10, 20], "baseline covers 3 modes at K = 5, 10, 20")
+    check(all(ci["resamples"] >= 1000 for mode in base["modes"].values() for ci in mode.values()), "baseline CIs use >= 1000 resamples")
+
+
+GATES = {"m0": gate_m0, "m1": gate_m1}
 
 if __name__ == "__main__":
     for name in sys.argv[1:]:

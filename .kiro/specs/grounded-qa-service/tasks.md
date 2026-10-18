@@ -165,7 +165,7 @@ flowchart TB
   - Write `scripts/retrieval_baseline.py` computing Recall@K and nDCG@K for K in {5, 10, 20} with 95% bootstrap CIs over the answerable Evaluation_Set questions, for BM25, hybrid, and hybrid+rerank, writing `results/retrieval_baseline.{json,md}` stamped with command/seed/40-char commit hash.
   - _Requirements: 3.3, 0.1, 0.2_
 
-- [ ] 2.14 M1 gate
+- [x] 2.14 M1 gate
   - `bash scripts/gate_m1.sh`: unit suite + coverage pass; corpus has no duplicate IDs; the Evaluation_Set validator passes; the baseline file exists, is stamped with a commit that exists, and every value is in `[0,1]`. Push.
 
 ## M2 — Answering pipeline with citations and refusal
