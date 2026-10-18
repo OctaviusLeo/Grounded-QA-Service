@@ -91,7 +91,20 @@ def gate_m2() -> None:
     check(len(live) == 5 and all(r["ok"] for r in live), "live pipeline check: 5 answers, each a refusal or citing only retrieved passages")
 
 
-GATES = {"m0": gate_m0, "m1": gate_m1, "m2": gate_m2}
+def gate_m3() -> None:
+    runs = [stamped(f"results/eval/ci_run{i}.json") for i in (1, 2)]
+    for i, body in enumerate(runs, 1):
+        computed = [m for m, v in body["metrics"].items() if "point" in v]
+        check(len(computed) == len(body["metrics"]), f"CI-subset run {i} computed every metric", f"{len(computed)}/{len(body['metrics'])}")
+        check(body["counts"]["questions"] == 30, f"CI-subset run {i} covered the 30-question subset")
+    det = stamped("results/eval/determinism.json")
+    check(det["identical"], "the two runs agree within 1e-6 (timings excluded)",
+          f"{len(det['metric_differences'])} metric / {det['record_difference_count']} record differences")
+    for path in ("scripts/make_label_packet.py", "scripts/finalize_owner_labels.ps1", "scripts/finalize_owner_labels.py"):
+        check(Path(path).exists(), f"{path} exists")
+
+
+GATES = {"m0": gate_m0, "m1": gate_m1, "m2": gate_m2, "m3": gate_m3}
 
 if __name__ == "__main__":
     for name in sys.argv[1:]:
