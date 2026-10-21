@@ -1,0 +1,54 @@
+{
+  "comparisons": {
+    "bm25_8b": {
+      "citation_precision": {
+        "confidence": 0.95,
+        "lower": -0.019817404890233384,
+        "n": 150,
+        "n_a": 124,
+        "n_b": 133,
+        "point": 0.0412543455412725,
+        "resamples": 1000,
+        "upper": 0.10217616912002488
+      },
+      "recall@5": {
+        "confidence": 0.95,
+        "lower": 0.06333333333333335,
+        "n": 150,
+        "n_a": 150,
+        "n_b": 150,
+        "point": 0.10999999999999999,
+        "resamples": 1000,
+        "upper": 0.16333333333333333
+      }
+    },
+    "hybrid_8b": {
+      "citation_precision": {
+        "confidence": 0.95,
+        "lower": -0.022888832785422118,
+        "n": 150,
+        "n_a": 124,
+        "n_b": 129,
+        "point": 0.028079936650829307,
+        "resamples": 1000,
+        "upper": 0.08382800796960929
+      },
+      "recall@5": {
+        "confidence": 0.95,
+        "lower": 0.02325000000000006,
+        "n": 150,
+        "n_a": 150,
+        "n_b": 150,
+        "point": 0.053333333333333344,
+        "resamples": 1000,
+        "upper": 0.09008333333333333
+      }
+    }
+  },
+  "reference": "hybrid_rerank_8b",
+  "stamp": {
+    "command": "python scripts/paired_comparison.py",
+    "commit": "f3b40eee17e9c6d4e4492057b91af3f6489bebdf",
+    "seed": 1234
+  }
+}
