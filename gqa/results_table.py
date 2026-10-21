@@ -190,7 +190,7 @@ def paired_section(path: Path) -> list[str]:
               "counts only the questions each configuration answered. An interval that excludes zero indicates a difference.", "",
               "| Comparison | Metric | Difference [95% CI] | Questions scored (reference / other) |", "| --- | --- | --- | --- |"]
     for other, metrics in body["comparisons"].items():
-        for m, ci in metrics.items():
+        for m, ci in ((m, metrics[m]) for m in PAIRED_LABELS):
             lines.append(f"| {ref} − {other} | {PAIRED_LABELS[m]} | {ci['point']:+.3f} [{ci['lower']:+.3f}, {ci['upper']:+.3f}] "
                          f"| {ci['n_a']} / {ci['n_b']} |")
     return lines + [""]
