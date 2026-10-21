@@ -175,6 +175,27 @@ def thresholds_section(path: Path) -> list[str]:
     return lines + [""]
 
 
+PAIRED_LABELS = {"recall@5": "Recall@5", "citation_precision": "Citation precision"}
+
+
+def paired_section(path: Path) -> list[str]:
+    body, stamp, err = _load(path)
+    lines = ["## Paired comparison (same questions)", ""]
+    if err:
+        return lines + [f"Not computed: {err}.", ""]
+    ref = body["reference"]
+    lines += [stamp_markdown(stamp), "",
+              f"Difference of `{ref}` minus each other configuration over the same answerable questions, with a 95% paired "
+              "bootstrap CI (each resample scores both configurations on the same draw of questions). Citation precision "
+              "counts only the questions each configuration answered. An interval that excludes zero indicates a difference.", "",
+              "| Comparison | Metric | Difference [95% CI] | Questions scored (reference / other) |", "| --- | --- | --- | --- |"]
+    for other, metrics in body["comparisons"].items():
+        for m, ci in metrics.items():
+            lines.append(f"| {ref} − {other} | {PAIRED_LABELS[m]} | {ci['point']:+.3f} [{ci['lower']:+.3f}, {ci['upper']:+.3f}] "
+                         f"| {ci['n_a']} / {ci['n_b']} |")
+    return lines + [""]
+
+
 def render(stamp: Stamp, results_dir: str | Path = "results", thresholds: str | Path = "config/thresholds.yaml") -> str:
     d = Path(results_dir)
     parts: Sequence[list[str]] = [
@@ -186,6 +207,7 @@ def render(stamp: Stamp, results_dir: str | Path = "results", thresholds: str | 
         injection_section(d / "injection.json"),
         agreement_section(d / "judge" / "agreement.json"),
         thresholds_section(Path(thresholds)),
+        paired_section(d / "paired.json"),
     ]
     return "\n".join(line for part in parts for line in part).rstrip() + "\n"
 
