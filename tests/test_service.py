@@ -142,3 +142,13 @@ def test_health_before_startup_and_helpers():
     Logger(stream=stream).emit("x", request_id="r1", a=1)
     assert json.loads(stream.getvalue()) == {"event": "x", "request_id": "r1", "a": 1}
     assert Metrics().snapshot() == {"requests_total": 0, "by_endpoint": {}, "by_outcome": {}, "latency_ms": {"count": 0}}
+
+
+def test_metrics_latency_memory_is_bounded():
+    m = Metrics(window=3)
+    for ms in (100.0, 1.0, 2.0, 3.0):
+        m.record("/answer", "answered", ms)
+    lat = m.snapshot()["latency_ms"]
+    assert len(m.latencies) == 3
+    assert lat["count"] == 4 and lat["mean_ms"] == 26.5 and lat["max_ms"] == 100.0
+    assert lat["p95_ms"] <= 3.0  # percentiles cover only the last three requests

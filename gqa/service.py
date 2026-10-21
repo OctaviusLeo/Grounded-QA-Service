@@ -23,7 +23,7 @@ import sys
 import threading
 import time
 import uuid
-from collections import Counter
+from collections import Counter, deque
 from collections.abc import Callable, Iterator
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
@@ -86,24 +86,34 @@ class Logger:
 
 
 class Metrics:
-    def __init__(self) -> None:
+    """Request counters and latency. Count, mean, and max cover every request; P50 and P95 cover the
+    most recent ``window`` requests, so memory stays bounded however long the service runs."""
+
+    def __init__(self, window: int = 10_000) -> None:
         self.lock = threading.Lock()
         self.by_outcome: Counter[str] = Counter()
         self.by_endpoint: Counter[str] = Counter()
-        self.latencies: list[float] = []
+        self.latencies: deque[float] = deque(maxlen=window)
+        self.latency_count = 0
+        self.latency_sum = 0.0
+        self.latency_max = 0.0
 
     def record(self, endpoint: str, outcome: str, duration_ms: float) -> None:
         with self.lock:
             self.by_outcome[outcome] += 1
             self.by_endpoint[endpoint] += 1
             self.latencies.append(duration_ms)
+            self.latency_count += 1
+            self.latency_sum += duration_ms
+            self.latency_max = max(self.latency_max, duration_ms)
 
     def snapshot(self) -> dict[str, Any]:
         with self.lock:
             lat = list(self.latencies)
-            latency = {"count": len(lat)}
+            latency = {"count": self.latency_count}
             if lat:
-                latency.update(mean_ms=sum(lat) / len(lat), p50_ms=percentile(lat, 50), p95_ms=percentile(lat, 95), max_ms=max(lat))
+                latency.update(mean_ms=self.latency_sum / self.latency_count, p50_ms=percentile(lat, 50),
+                               p95_ms=percentile(lat, 95), max_ms=self.latency_max)
             return {"requests_total": sum(self.by_endpoint.values()), "by_endpoint": dict(self.by_endpoint),
                     "by_outcome": dict(self.by_outcome), "latency_ms": latency}
 
