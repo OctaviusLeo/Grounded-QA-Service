@@ -15,7 +15,7 @@ from typing import Any, Protocol
 
 from gqa.answer import REFUSAL, REFUSAL_TEXT, Answer
 from gqa.confidence import estimate_confidence, should_refuse
-from gqa.parser import Sentence, citations_in, parse_answer, split_sentences
+from gqa.parser import Sentence, citations_in, is_refusal, parse_answer, split_sentences
 from gqa.prompt import PromptBuilder, PromptMessages
 from gqa.retrieval import RagLiteRetriever, RetrievedPassage
 from gqa.validate import CitationValidator, ValidationResult, sentence_is_valid
@@ -133,7 +133,9 @@ class AnsweringPipeline:
         def settle(text: str) -> Iterator[StreamEvent]:
             nonlocal dropped
             sentence = Sentence(text, citations_in(text))
-            if sentence_is_valid(sentence, retrieved):
+            # Before the first chunk, refuse exactly when the non-streaming path would: a reply that
+            # opens with the refusal phrase is a refusal even if a later sentence cites a passage.
+            if sentence_is_valid(sentence, retrieved) and (kept or not is_refusal(buffer)):
                 kept.append(sentence)
                 yield StreamEvent("chunk", text if len(kept) == 1 else " " + text)
             else:

@@ -76,6 +76,8 @@ def test_stream_refusals():
     assert chunks == [REFUSAL_TEXT] and done.answer == REFUSAL and done.meta["refusal_source"] == "confidence"
     chunks, done = _collect(_pipe(fakes.FakeModel(REFUSAL_TEXT + ".")).stream(Q))
     assert chunks == [REFUSAL_TEXT] and done.meta["refusal_source"] == "model"
+    chunks, done = _collect(_pipe(fakes.FakeModel(REFUSAL_TEXT + ". Maybe Santa Clara [d1:0:00000001].")).stream(Q))
+    assert chunks == [REFUSAL_TEXT] and done.answer == REFUSAL and done.meta["refusal_source"] == "model"
     chunks, done = _collect(_pipe(fakes.FakeModel("Uncited claim.")).stream(Q))
     assert done.answer == REFUSAL and done.meta["refusal_source"] == "validation"
 
@@ -86,7 +88,7 @@ def test_stream_waits_for_complete_citations():
     assert out == ["Santa Clara. [d1:0:00000001]", " Next sentence [d1:0:00000001]."]
 
 
-replies = st.lists(st.tuples(st.sampled_from(["Santa Clara", "A game", "It was 2016", "Normandy"]),
+replies = st.lists(st.tuples(st.sampled_from(["Santa Clara", "A game", "It was 2016", "Normandy", "Not found in the documents"]),
                              st.sampled_from(["", " [d1:0:00000001]", " [d0:0:00000000]", " [d1:0:00000001, d3:0:00000003]"]),
                              st.sampled_from([".", "!", ". "])), min_size=1, max_size=4)
 
