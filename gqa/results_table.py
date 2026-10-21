@@ -1,4 +1,4 @@
-"""The generated Results_Table, ``results/summary.md`` (Req 8.3, 8.4, 0.1).
+"""The generated results table, ``results/summary.md`` (Req 8.3, 8.4, 0.1).
 
 Rendered only from stamped result files; each section carries its source's command, seed, and
 commit. The only way a number in it changes is by regenerating it.
@@ -21,7 +21,7 @@ PENDING = "owner labels pending"
 QUALITY_LABELS = {
     "exact_match": "Exact match", "f1": "Token F1", "citation_precision": "Citation precision",
     "citation_recall": "Citation recall", "refusal_accuracy": "Refusal accuracy",
-    "answerable_refused": "Answerable refused", "faithfulness": "Faithfulness (judge)",
+    "answerable_refused": "Answerable refused", "faithfulness": "Faithfulness (LLM judge, unvalidated)",
 }
 RETRIEVAL_LABELS = {m: m.replace("recall", "Recall").replace("ndcg", "nDCG") for m in RETRIEVAL}
 
@@ -46,14 +46,16 @@ def _load(path: Path) -> tuple[dict[str, Any] | None, Stamp | None, str | None]:
 
 def experiments_section(path: Path) -> list[str]:
     body, stamp, err = _load(path)
-    lines = ["## Configuration experiments (Results_Table)", ""]
+    lines = ["## Configuration experiments", ""]
     if err:
         return lines + [f"Not computed: {err}.", ""]
     rows = body["configurations"]
     lines += [stamp_markdown(stamp), "",
-              f"{body['questions']} Evaluation_Set questions ({body['answerable']} answerable, {body['unanswerable']} unanswerable). "
+              f"{body['questions']} evaluation questions ({body['answerable']} answerable, {body['unanswerable']} unanswerable). "
               f"Each metric: point estimate [95% bootstrap CI, {body['resamples']} resamples]. Latency is the pipeline only "
-              f"(retrieval, reranking, generation, validation), not the judge. Judge: `{body['judge_model']}`.", "",
+              f"(retrieval, reranking, generation, validation), not the judge. Citation precision is over the answerable questions "
+              f"each configuration answered. Faithfulness is the verdict of an LLM judge (`{body['judge_model']}`) that has not "
+              "yet been checked against human labels.", "",
               "### Answer quality, latency, and cost", "",
               "| Configuration | Retrieval | Model | " + " | ".join(QUALITY_LABELS[m] for m in QUALITY) + " | P50 latency (ms) | P95 latency (ms) | Cost per 1,000 questions (USD) |",
               "|" + " --- |" * (3 + len(QUALITY) + 3)]
@@ -167,7 +169,7 @@ def thresholds_section(path: Path) -> list[str]:
         return lines + ["Not tuned: config/thresholds.yaml not found.", ""]
     data = yaml.safe_load(path.read_text(encoding="utf-8"))
     lines += [stamp_markdown(stamp_from_dict(data["stamp"])), "",
-              f"{data['questions']} tuning questions (disjoint from the Evaluation_Set), model `{data['tuning_model']}`. {data['rule']}.", "",
+              f"{data['questions']} tuning questions (disjoint from the evaluation questions), model `{data['tuning_model']}`. {data['rule']}.", "",
               "| Mode | Threshold | Tuning balanced accuracy | Unanswerable refused | Answerable answered |", "| --- | --- | --- | --- | --- |"]
     for mode, t in data["thresholds"].items():
         s = data["tuning_split_scores"][mode]
