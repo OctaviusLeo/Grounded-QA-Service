@@ -25,4 +25,5 @@ SOFTWARE.
 Exception: the files under `data/` are derived from the SQuAD 2.0 dev set
 (Rajpurkar, Jia and Liang, 2018; paragraphs from Wikipedia) and are licensed
 under CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/), not MIT.
-See THIRD_PARTY.md for attribution.
+The same applies to the SQuAD questions and passage text quoted in generated
+files under `results/` and `docs/media/`. See THIRD_PARTY.md for attribution.
