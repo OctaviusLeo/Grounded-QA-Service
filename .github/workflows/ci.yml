@@ -35,8 +35,9 @@ jobs:
   quality:
     name: Evaluation subset and regression gate
     needs: unit
-    # Never run a fork's pull request on the self-hosted runner: only pushes to main and pull
-    # requests from branches of this repository reach it.
+    # Only pushes to main and pull requests from branches of this repository reach the self-hosted
+    # runner. A fork's pull request runs its own copy of this file and could drop this condition, so
+    # outside contributors' runs also need the owner's approval (a repository setting).
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: [self-hosted, gpu]
     timeout-minutes: 60

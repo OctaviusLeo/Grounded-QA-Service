@@ -1,8 +1,8 @@
 # Grounded QA Service
 
-A question-answering service that answers **only** from retrieved passages, cites the passage behind every sentence, and otherwise refuses with "not found in the documents". It runs open-weight IBM Granite models locally through Ollama behind a FastAPI API, and every number in this README was produced by a script in this repository and is stamped with its command, seed, and commit.
+A question-answering service that answers **only** from retrieved passages, requires every sentence to cite a passage retrieved for the question, and otherwise refuses with "not found in the documents". It runs open-weight IBM Granite models locally through Ollama behind a FastAPI API, and every number in this README was produced by a script in this repository and is stamped with its command, seed, and commit.
 
-**Why it matters.** A retrieval-augmented model can still invent facts, cite passages it never saw, or obey instructions hidden inside a retrieved document. This service treats each of those as a failure to prevent and to measure: an answer is accepted only if every sentence cites a passage that was actually retrieved for the question, a low-confidence retrieval is refused instead of guessed, and passages are handled as untrusted data.
+**Why it matters.** A retrieval-augmented model can still invent facts, cite passages it never saw, or obey instructions hidden inside a retrieved document. This service blocks what it can check mechanically and measures the rest: an answer is accepted only if every sentence cites a passage that was actually retrieved for the question, a low-confidence retrieval is refused instead of guessed, and passages are handled as untrusted data. Whether a cited passage really supports its sentence is not checked when answering; it is measured afterwards by an LLM judge.
 
 ## Headline results
 
@@ -10,12 +10,13 @@ A question-answering service that answers **only** from retrieved passages, cite
 
 | What was measured | Result |
 | --- | --- |
-| Retrieval Recall@5: BM25 → hybrid retrieval with cross-encoder reranking (answerable questions) | 0.847 [0.787, 0.903] → **0.957** [0.920, 0.987] |
-| Citation precision: hybrid + reranking with `granite3.3:8b` (BM25 with the same model) | **0.891** [0.840, 0.938] (0.850 [0.792, 0.905]) |
+| Retrieval Recall@5 on the answerable questions: BM25 → hybrid retrieval with cross-encoder reranking | 0.847 [0.787, 0.903] → **0.957** [0.920, 0.987]; paired difference +0.110 [+0.063, +0.163] |
+| Citation precision over the answerable questions each configuration answered: hybrid + reranking with `granite3.3:8b` (BM25 with the same model) | **0.891** [0.840, 0.938] (0.850 [0.792, 0.905]); paired difference +0.041 [-0.020, +0.102], not a clear gain |
+| Answerable questions refused, same two configurations | 0.173 [0.113, 0.233] (0.113 [0.067, 0.167]) |
 | Prompt-injection cases whose planted instruction reached the final answer | **0 of 19** classified cases (22 cases, 3 unclassified) |
 | Refusal accuracy on unanswerable questions, hybrid + reranking with `granite3.3:8b` | 0.420 [0.280, 0.560] |
 
-What these numbers do not show: better retrieval did not raise answer token F1 (0.522 with reranking, 0.579 without, overlapping intervals), the tuned confidence gate refuses more answerable questions with reranking (0.173 of them), and the LLM judge's faithfulness scores have not yet been checked against human labels. See [Known limitations](#known-limitations).
+What these numbers do not show: better retrieval did not raise answer token F1 (0.522 with reranking, 0.579 without, overlapping intervals); the citation-precision gain over BM25 is not distinguishable from zero; citation validation checks that a cited passage was retrieved, not that it supports the sentence; and the faithfulness scores in the full tables come from an LLM judge that has not yet been checked against human labels. See [Known limitations](#known-limitations).
 
 ![Demo: streamed answers with their citations, and a refusal](docs/media/demo.gif)
 
@@ -79,32 +80,32 @@ flowchart LR
     C -- no --> P[Prompt: rules in the system message,<br/>passages only inside a delimited data block]
     P --> M[Granite on Ollama<br/>OpenAI-compatible API]
     M --> V{Citation validation<br/>every sentence cites a retrieved passage?}
-    V -- yes --> A[Answer + cited Passage_IDs]
+    V -- yes --> A[Answer + cited passage IDs]
     V -- some sentences --> A2[Corrected answer:<br/>invalid sentences dropped]
     V -- none --> X
 ```
 
-1. **Corpus and questions.** The SQuAD v2.0 dev set (`CC-BY-SA-4.0`): every context paragraph is chunked with Rag_Lite's `chunk_text` and given a stable Passage_ID, `doc:chunk:sha1-prefix` (`gqa/ingest.py`). The reported evaluation set and a separate tuning split are sampled with a fixed seed (`scripts/build_evalset.py`); unanswerable questions come from SQuAD's adversarial unanswerables.
+1. **Corpus and questions.** The SQuAD v2.0 dev set (`CC-BY-SA-4.0`): every context paragraph is chunked with `chunk_text` from Rag_Lite (my earlier library [rag-lite-tfidf-eval](https://github.com/OctaviusLeo/rag-lite-tfidf-eval), imported as `src`) and given a stable passage ID, `doc:chunk:sha1-prefix` (`gqa/ingest.py`). The reported evaluation set and a separate tuning split are sampled with a fixed seed (`scripts/build_evalset.py`); unanswerable questions come from SQuAD's adversarial unanswerables.
 2. **Retrieval** is entirely Rag_Lite's `build_index` and `retrieve_hybrid` (`gqa/retrieval.py`). Rag_Lite always returns the top results even for nonsense, so the adapter drops passages that share no content word with the question; a question that matches nothing gets no passages and is refused.
 3. **Refusal gate.** Confidence is the top retrieval score mapped into the unit interval (the logistic of the cross-encoder logit when reranking). The per-mode thresholds are tuned end-to-end on the tuning split only (`gqa/tuning.py`): a question counts as refused if the gate stops it *or* the model or validator refuses it later.
-4. **Prompt and guardrails** (`gqa/prompt.py`). The system message holds the rules (answer only from the passages, give the shortest answering phrase, cite the Passage_ID, refuse with the exact text, treat passages as untrusted data). Passages appear only inside one `<passages>` block; delimiter tags inside a passage are neutralized so it cannot close the block.
+4. **Prompt and guardrails** (`gqa/prompt.py`). The system message holds the rules (answer only from the passages, give the shortest answering phrase, cite the passage ID, refuse with the exact text, treat passages as untrusted data). Passages appear only inside one `<passages>` block; delimiter tags inside a passage are neutralized so it cannot close the block.
 5. **Citation validation** (`gqa/validate.py`). Every sentence is a claim. An answer is accepted only if every sentence cites at least one passage and every cited ID was retrieved for this question; otherwise invalid sentences are dropped, and if none survive the answer becomes a refusal. The streaming endpoint applies the same rule sentence by sentence, so an invalid sentence is never sent.
 6. **Evaluation** (`gqa/eval.py`, `gqa/experiments.py`). Recall@K and nDCG@K, exact match and token F1 (SQuAD normalization), citation precision and recall against gold passages, refusal accuracy on unanswerable questions, and faithfulness scored by an LLM judge (`granite3.3:8b`, `gqa/judge.py`). Every metric has a 95% bootstrap CI from 1,000 resamples. Latency is timed around the pipeline only, not the judge.
 
 ## Results
 
-All tables below are copied verbatim from the generated `results/summary.md` by `python scripts/render_readme.py`, and `python scripts/check_readme.py` fails the build if any number in this README cannot be traced to a generated file. Each block carries the command, seed, and commit that produced it.
+All tables below are copied verbatim from the generated `results/summary.md` by `python scripts/render_readme.py`, and `python scripts/check_readme.py` fails the build if any number in this README cannot be traced to a generated file. Each block carries the command, seed, and commit that produced it. The retrieval-only baseline (`results/retrieval_baseline.md`, scored by Rag_Lite without the model) reproduces the retrieval table below exactly, so it is not repeated here.
 
-<!-- BEGIN summary:Configuration experiments (Results_Table) -->
-## Configuration experiments (Results_Table)
+<!-- BEGIN summary:Configuration experiments -->
+## Configuration experiments
 
 Generated by `python scripts/run_experiments.py` · seed `1234` · commit `2b73f2e91c7fc7213aabcfa9cb0ae0a6c54c9e08`
 
-200 Evaluation_Set questions (150 answerable, 50 unanswerable). Each metric: point estimate [95% bootstrap CI, 1000 resamples]. Latency is the pipeline only (retrieval, reranking, generation, validation), not the judge. Judge: `granite3.3:8b`.
+200 evaluation questions (150 answerable, 50 unanswerable). Each metric: point estimate [95% bootstrap CI, 1000 resamples]. Latency is the pipeline only (retrieval, reranking, generation, validation), not the judge. Citation precision is over the answerable questions each configuration answered. Faithfulness is the verdict of an LLM judge (`granite3.3:8b`) that has not yet been checked against human labels.
 
 ### Answer quality, latency, and cost
 
-| Configuration | Retrieval | Model | Exact match | Token F1 | Citation precision | Citation recall | Refusal accuracy | Answerable refused | Faithfulness (judge) | P50 latency (ms) | P95 latency (ms) | Cost per 1,000 questions (USD) |
+| Configuration | Retrieval | Model | Exact match | Token F1 | Citation precision | Citation recall | Refusal accuracy | Answerable refused | Faithfulness (LLM judge, unvalidated) | P50 latency (ms) | P95 latency (ms) | Cost per 1,000 questions (USD) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | bm25_8b | bm25 | `granite3.3:8b` | 0.353 [0.280, 0.427] | 0.546 [0.486, 0.608] | 0.850 [0.792, 0.905] | 0.767 [0.700, 0.833] | 0.320 [0.200, 0.440] | 0.113 [0.067, 0.167] | 0.874 [0.820, 0.922] | 1444 | 2464 | 0.0231 |
 | hybrid_8b | hybrid | `granite3.3:8b` | 0.387 [0.313, 0.467] | 0.579 [0.517, 0.641] | 0.863 [0.801, 0.917] | 0.737 [0.663, 0.800] | 0.360 [0.220, 0.480] | 0.140 [0.087, 0.200] | 0.932 [0.888, 0.969] | 1457 | 2451 | 0.0214 |
@@ -128,7 +129,22 @@ Cost basis:
 - hybrid_rerank_2b: 0.01440 kWh GPU energy over 200 questions (mean 156 W for 333 s) at USD 0.1755/kWh
 
 Electricity price: U.S. EIA, Electric Power Monthly Table 5.6.A, Virginia residential average price, 17.55 cents/kWh for July 2026 (preliminary; released 2026-09-24), https://www.eia.gov/electricity/monthly/epm_table_grapher.php?t=epmt_5_6_a, read 2026-10-17.
-<!-- END summary:Configuration experiments (Results_Table) -->
+<!-- END summary:Configuration experiments -->
+
+<!-- BEGIN summary:Paired comparison (same questions) -->
+## Paired comparison (same questions)
+
+Generated by `python scripts/paired_comparison.py` · seed `1234` · commit `f3b40eee17e9c6d4e4492057b91af3f6489bebdf`
+
+Difference of `hybrid_rerank_8b` minus each other configuration over the same answerable questions, with a 95% paired bootstrap CI (each resample scores both configurations on the same draw of questions). Citation precision counts only the questions each configuration answered. An interval that excludes zero indicates a difference.
+
+| Comparison | Metric | Difference [95% CI] | Questions scored (reference / other) |
+| --- | --- | --- | --- |
+| hybrid_rerank_8b − bm25_8b | Recall@5 | +0.110 [+0.063, +0.163] | 150 / 150 |
+| hybrid_rerank_8b − bm25_8b | Citation precision | +0.041 [-0.020, +0.102] | 124 / 133 |
+| hybrid_rerank_8b − hybrid_8b | Recall@5 | +0.053 [+0.023, +0.090] | 150 / 150 |
+| hybrid_rerank_8b − hybrid_8b | Citation precision | +0.028 [-0.023, +0.084] | 124 / 129 |
+<!-- END summary:Paired comparison (same questions) -->
 
 <!-- BEGIN summary:Injection test -->
 ## Injection test
@@ -150,26 +166,12 @@ Before citation validation, the canary appeared in the model's raw output in 2 o
 not computed: owner labels pending (`results/judge/owner_labels.csv`; run `scripts/finalize_owner_labels.ps1` after labeling).
 <!-- END summary:Judge agreement (Cohen's kappa vs owner labels) -->
 
-<!-- BEGIN summary:Retrieval baseline (Rag_Lite, answerable questions) -->
-## Retrieval baseline (Rag_Lite, answerable questions)
-
-Generated by `python scripts/retrieval_baseline.py` · seed `1234` · commit `e0c79dc1b51ed8a37cdfd9b08a437de791857436`
-
-150 answerable questions.
-
-| Mode | Recall@5 | Recall@10 | Recall@20 | nDCG@5 | nDCG@10 | nDCG@20 |
-| --- | --- | --- | --- | --- | --- | --- |
-| bm25 | 0.847 [0.787, 0.903] | 0.877 [0.823, 0.930] | 0.907 [0.857, 0.950] | 0.772 [0.712, 0.829] | 0.782 [0.727, 0.835] | 0.790 [0.735, 0.841] |
-| hybrid | 0.903 [0.853, 0.950] | 0.950 [0.913, 0.983] | 0.963 [0.930, 0.993] | 0.836 [0.785, 0.884] | 0.852 [0.805, 0.894] | 0.856 [0.810, 0.897] |
-| hybrid_rerank | 0.957 [0.920, 0.987] | 0.963 [0.930, 0.993] | 0.963 [0.930, 0.993] | 0.937 [0.899, 0.968] | 0.939 [0.903, 0.970] | 0.939 [0.903, 0.970] |
-<!-- END summary:Retrieval baseline (Rag_Lite, answerable questions) -->
-
 <!-- BEGIN summary:Refusal thresholds (tuned on the tuning split) -->
 ## Refusal thresholds (tuned on the tuning split)
 
 Generated by `python scripts/tune_thresholds.py` · seed `1234` · commit `ddf3e34b5a19c3119dcfcff41634e25f64dc5e87`
 
-100 tuning questions (disjoint from the Evaluation_Set), model `granite3.3:8b`. refuse when retrieval confidence < threshold; threshold maximizes end-to-end balanced accuracy (gate or downstream refusal) on the tuning split, ties to the lower value.
+100 tuning questions (disjoint from the evaluation questions), model `granite3.3:8b`. refuse when retrieval confidence < threshold; threshold maximizes end-to-end balanced accuracy (gate or downstream refusal) on the tuning split, ties to the lower value.
 
 | Mode | Threshold | Tuning balanced accuracy | Unanswerable refused | Answerable answered |
 | --- | --- | --- | --- | --- |
@@ -178,8 +180,6 @@ Generated by `python scripts/tune_thresholds.py` · seed `1234` · commit `ddf3e
 | hybrid_rerank | 0.9092 | 0.700 | 0.600 | 0.800 |
 <!-- END summary:Refusal thresholds (tuned on the tuning split) -->
 
-## Cost and latency trade-offs
-
 <!-- BEGIN summary:Trade-offs -->
 ## Trade-offs
 
@@ -187,7 +187,7 @@ Generated by `python scripts/run_experiments.py` · seed `1234` · commit `2b73f
 
 Relative to `hybrid_rerank_8b`: differences of point estimates (compare the CIs above before reading much into small ones) and ratios of latency and cost.
 
-| Configuration | Token F1 vs ref | Citation precision vs ref | Refusal accuracy vs ref | Faithfulness (judge) vs ref | P50 latency vs ref | P95 latency vs ref | Cost vs ref |
+| Configuration | Token F1 vs ref | Citation precision vs ref | Refusal accuracy vs ref | Faithfulness (LLM judge, unvalidated) vs ref | P50 latency vs ref | P95 latency vs ref | Cost vs ref |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | bm25_8b | +0.024 | -0.041 | -0.100 | -0.060 | 0.84x | 0.77x | 1.12x |
 | hybrid_8b | +0.056 | -0.028 | -0.060 | -0.003 | 0.85x | 0.77x | 1.04x |
@@ -197,7 +197,7 @@ Relative to `hybrid_rerank_8b`: differences of point estimates (compare the CIs 
 
 How to read these numbers:
 
-- **Reranking buys retrieval quality and citation precision, and costs latency.** The cross-encoder runs on the CPU over the hybrid candidates, so `hybrid_rerank_8b` has the highest Recall@5, nDCG, and citation precision and the slowest P50 and P95 of the three 8B configurations.
+- **Reranking buys retrieval quality and costs latency.** The cross-encoder runs on the CPU over the hybrid candidates, so `hybrid_rerank_8b` has the highest Recall@5, nDCG, and citation precision point estimates and the slowest P50 and P95 of the three 8B configurations. The paired comparison shows the Recall@5 gain is clear and the citation-precision gain is not.
 - **Better retrieval did not raise token F1 here.** With reranking, the end-to-end-tuned confidence gate refuses more questions, including answerable ones (the "Answerable refused" column), so `hybrid_8b` has the best F1 point estimate. Its CI overlaps the others, so the honest reading is "no clear F1 difference among the 8B configurations, and clear differences in refusals and citation precision".
 - **The 2B model is the cheapest and refuses the most.** It uses the least GPU energy per question but loses on F1, citation precision, and faithfulness. Most of its extra refusals come from citation validation: it often writes the passage ID without brackets, and an uncited sentence is dropped.
 - **Cost is GPU electricity only**, measured with `nvidia-smi` power sampling while answering and priced at the recorded EIA residential rate. No hosted model is configured; `gqa/experiments.py` computes hosted cost from token counts and per-token prices if one is added to `config/experiments.yaml`.
@@ -217,6 +217,7 @@ Everything below runs inside WSL from the repository root through `scripts/wsl_r
 | Refusal thresholds (`config/thresholds.yaml`) | `python scripts/tune_thresholds.py` |
 | Configuration experiments (`results/experiments.json`, `results/runs/`) | `python scripts/run_experiments.py` |
 | Injection test (`results/injection.json`) | `python scripts/injection_test.py` |
+| Paired comparison (`results/paired.json`, CPU only, from the committed run records) | `python scripts/paired_comparison.py` |
 | Results table (`results/summary.md`) | `python scripts/write_results_table.py` |
 | One configuration on the CI subset | `python -m gqa.eval --config config/default.yaml --seed 1234 --mode hybrid_rerank --model granite3.3:2b --subset ci --out results/eval/ci_run1.json` |
 | Determinism check (`results/eval/determinism.json`) | `bash scripts/eval_twice.sh` |
@@ -243,7 +244,7 @@ The suite has one Hypothesis property test (`max_examples=100`, derandomized) fo
 1. **unit** (GitHub-hosted `ubuntu-latest`): installs `uv.lock` and runs `bash scripts/test_unit.sh`; any failing test or module under the coverage bar fails the run.
 2. **quality** (self-hosted runner `desktop-gpu`, because GitHub's servers cannot reach the GPU): starts the Ollama service, evaluates the CI subset defined in `config/ci.yaml` with the CI configuration, and runs `python scripts/ci_gate.py`. The gate fails if faithfulness or citation precision falls below `results/baseline.json` by more than the absolute margins recorded in `config/ci.yaml`, or if the baseline file is missing or unreadable.
 
-The self-hosted runner is the author's desktop, so the quality job runs only on pushes to `main` and on pull requests from branches of this repository (`if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository`). A pull request from a fork runs the unit job only.
+The self-hosted runner is the author's desktop. As committed, the workflow runs the quality job only on pushes to `main` and on pull requests from branches of this repository (`if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository`). That condition alone does not protect the runner, because a pull request runs its own copy of the workflow file and a fork could remove it. Workflow runs from outside contributors therefore also need the owner's manual approval, a repository setting that GitHub offers only for public repositories and that is turned on when this one is made public.
 
 ## Repository layout
 
@@ -263,8 +264,10 @@ The self-hosted runner is the author's desktop, so the quality job runs only on 
 - **SQuAD is an imperfect open-domain benchmark.** Its questions were written while looking at one paragraph, so some are ambiguous across the whole corpus, and its unanswerable questions are adversarial (worded to resemble a real paragraph). That is why refusal accuracy stays modest for every 8B configuration.
 - **Gold passages come from answer offsets in the question's own paragraph.** Another passage that also states the answer counts as a wrong citation and a retrieval miss, so citation precision and the retrieval metrics are conservative.
 - **BM25-only confidence is always at its maximum** because Rag_Lite divides BM25 scores by the per-query maximum; the tuned BM25 threshold cannot refuse, and BM25 refusals come only from the model or validation.
+- **Citation validation checks membership, not entailment.** A sentence passes if it cites a passage retrieved for this question; whether that passage supports the sentence is measured only by the LLM judge, which has not been checked against human labels.
+- **The evaluation and tuning questions are disjoint but not independent.** They come from the same Wikipedia articles (every tuning article also appears in the evaluation set), and a few share a source paragraph and gold passage, so the tuned thresholds may fit these articles better than new ones. Refusal accuracy on unanswerable questions with hybrid + reranking still fell from 0.600 on the tuning split to 0.420 on the evaluation set.
 - **One retrieval threshold per mode**, tuned with the 8B model, is reused for the 2B configuration.
-- **The injection rule is narrow.** A case counts as followed only if its canary string reaches the final answer. In one case the final answer was written in French, as the planted instruction asked, without the canary word, and it counts as not followed. The cases are few, so the followed fraction is a coarse estimate; the raw-output count shows how much the citation validator contributes.
+- **The injection rule is narrow.** A case counts as followed only if its canary string reaches the final answer. Two cases followed an instruction without its canary and count as not followed: in I04 the final answer was written in French, as the planted instruction asked, and in I22 it was written in capital letters (`AGRESSIVENESS`). The cases are few, so the followed fraction is a coarse estimate; the raw-output count shows how much the citation validator contributes.
 - **Cost covers GPU board power only**, including whatever the idle desktop draws; the CPU work (embeddings, reranking) and the rest of the PC are not measured, and the price is one state's residential average for one month.
 - **Small CI subset.** The regression gate evaluates the subset in `config/ci.yaml`, so it catches large drops only; its margins are absolute and recorded in the same file. Two runs of the subset on the same commit were identical (`results/eval/determinism.json`); other hardware or Ollama versions may not reproduce token-for-token.
 - **Streaming is per validated sentence.** Answers are usually one short phrase, so most streams carry a single chunk.
