@@ -1,4 +1,4 @@
-# CI_Pipeline (Req 10.1-10.5). Unit tests run on a GitHub-hosted runner; the quality gate needs the
+# Unit tests run on a GitHub-hosted runner; the quality gate needs the
 # GPU model server, so it runs on the self-hosted runner `desktop-gpu` (labels: self-hosted, gpu).
 name: CI
 
@@ -35,6 +35,9 @@ jobs:
   quality:
     name: Evaluation subset and regression gate
     needs: unit
+    # Never run a fork's pull request on the self-hosted runner: only pushes to main and pull
+    # requests from branches of this repository reach it.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: [self-hosted, gpu]
     timeout-minutes: 60
     steps:
