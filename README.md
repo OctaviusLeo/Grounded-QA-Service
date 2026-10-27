@@ -231,6 +231,7 @@ Everything below runs inside WSL from the repository root through `scripts/wsl_r
 | Suite | Command |
 | --- | --- |
 | Unit and property tests, with the per-module coverage gate (every non-trivial module at or above `MIN_PERCENT = 80.0` in `scripts/check_coverage.py`) | `bash scripts/test_unit.sh` |
+| Lint: Pyflakes and pycodestyle error checks (rules in `pyproject.toml`) | `uvx ruff@0.17.1 check .` |
 | Tests that load the real Hugging Face embedder and cross-encoder | `python -m pytest -m hf` |
 | Docker Compose start-up check (polls `/health`, sends one request) | `bash scripts/compose_check.sh` |
 | Acceptance gate scripts used during development, one per milestone | `bash scripts/gate_m0.sh` through `bash scripts/gate_m5.sh` |
@@ -241,7 +242,7 @@ The suite has one Hypothesis property test (`max_examples=100`, derandomized) fo
 
 `.github/workflows/ci.yml` runs on every push to `main` and every pull request targeting it:
 
-1. **unit** (GitHub-hosted `ubuntu-latest`): installs `uv.lock`, runs `bash scripts/test_unit.sh`, then runs `python scripts/check_readme.py`; any failing test, module under the coverage bar, or README number that cannot be traced to a generated file fails the run.
+1. **unit** (GitHub-hosted `ubuntu-latest`): lints with `ruff`, installs `uv.lock`, runs `bash scripts/test_unit.sh`, then runs `python scripts/check_readme.py`; any lint error, failing test, module under the coverage bar, or README number that cannot be traced to a generated file fails the run.
 2. **quality** (self-hosted runner `desktop-gpu`, because GitHub's servers cannot reach the GPU): starts the Ollama service, evaluates the CI subset defined in `config/ci.yaml` with the CI configuration, and runs `python scripts/ci_gate.py`. The gate fails if faithfulness or citation precision falls below `results/baseline.json` by more than the absolute margins recorded in `config/ci.yaml`, or if the baseline file is missing or unreadable.
 
 The self-hosted runner is the author's desktop. As committed, the workflow runs the quality job only on pushes to `main` and on pull requests from branches of this repository (`if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository`). That condition alone does not protect the runner, because a pull request runs its own copy of the workflow file and a fork could remove it. Workflow runs from outside contributors therefore also need the owner's manual approval, a repository setting that GitHub offers only for public repositories and that is turned on when this one is made public.

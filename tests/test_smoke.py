@@ -138,7 +138,6 @@ def test_unload_all_waits_until_nothing_is_resident():
 
 
 def test_unload_failure_is_reported():
-    calls = {"n": 0}
     base = _deps().http_get
 
     def http_get(path):
@@ -146,4 +145,6 @@ def test_unload_failure_is_reported():
             raise httpx.ConnectError("down")
         return base(path)
 
-    assert smoke.run_smoke("m", _deps(http_get=http_get)).failed_condition == "model server reachable"
+    result = smoke.run_smoke("m", _deps(http_get=http_get))
+    assert result.failed_condition == "model server reachable"
+    assert result.cause.startswith("cannot unload resident models")
