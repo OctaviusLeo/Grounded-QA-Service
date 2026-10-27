@@ -28,7 +28,7 @@ What these numbers do not show: better retrieval did not raise answer token F1 (
 - **Citation validator** (`gqa/validate.py`): every sentence must cite a passage retrieved for this question; invalid sentences are dropped, and an answer with none left becomes a refusal. The streaming endpoint applies the same rule sentence by sentence.
 - **Service** (`gqa/service.py`): FastAPI with `/answer`, a server-sent-events `/answer/stream`, `/health`, and `/metrics`, request IDs and JSON logs, packaged with Docker Compose on digest-pinned images.
 - **Evaluation harness** (`gqa/eval.py`, `gqa/experiments.py`, `gqa/injection.py`): retrieval, answer, citation, and refusal metrics with bootstrap intervals, an LLM faithfulness judge, measured GPU-energy cost, and a prompt-injection test.
-- **Guards on the numbers**: CI runs the unit and property tests with a per-module coverage bar, a GPU job fails on a regression against a committed baseline, and `scripts/check_readme.py` fails if any number in this README cannot be traced to a generated file.
+- **Guards on the numbers**: CI runs the unit and property tests with a per-module coverage bar, a GPU job fails on a regression against a committed baseline, and CI runs `scripts/check_readme.py`, which fails if any number in this README cannot be traced to a generated file.
 
 ## Quickstart: tests on a CPU (no GPU, no model download)
 
@@ -241,7 +241,7 @@ The suite has one Hypothesis property test (`max_examples=100`, derandomized) fo
 
 `.github/workflows/ci.yml` runs on every push to `main` and every pull request targeting it:
 
-1. **unit** (GitHub-hosted `ubuntu-latest`): installs `uv.lock` and runs `bash scripts/test_unit.sh`; any failing test or module under the coverage bar fails the run.
+1. **unit** (GitHub-hosted `ubuntu-latest`): installs `uv.lock`, runs `bash scripts/test_unit.sh`, then runs `python scripts/check_readme.py`; any failing test, module under the coverage bar, or README number that cannot be traced to a generated file fails the run.
 2. **quality** (self-hosted runner `desktop-gpu`, because GitHub's servers cannot reach the GPU): starts the Ollama service, evaluates the CI subset defined in `config/ci.yaml` with the CI configuration, and runs `python scripts/ci_gate.py`. The gate fails if faithfulness or citation precision falls below `results/baseline.json` by more than the absolute margins recorded in `config/ci.yaml`, or if the baseline file is missing or unreadable.
 
 The self-hosted runner is the author's desktop. As committed, the workflow runs the quality job only on pushes to `main` and on pull requests from branches of this repository (`if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository`). That condition alone does not protect the runner, because a pull request runs its own copy of the workflow file and a fork could remove it. Workflow runs from outside contributors therefore also need the owner's manual approval, a repository setting that GitHub offers only for public repositories and that is turned on when this one is made public.

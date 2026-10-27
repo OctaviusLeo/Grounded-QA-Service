@@ -31,6 +31,8 @@ jobs:
         run: uv sync --frozen --all-groups
       - name: Run the suite with the coverage gate
         run: PYTHON=.venv/bin/python bash scripts/test_unit.sh
+      - name: Check that every README number traces to a generated file
+        run: PYTHONPATH=. .venv/bin/python scripts/check_readme.py
 
   quality:
     name: Evaluation subset and regression gate
