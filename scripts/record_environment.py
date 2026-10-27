@@ -110,7 +110,7 @@ def main() -> int:
         "| Image | Digest | License |", "| --- | --- | --- |",
         *image_rows,
         "",
-        "GitHub Actions used by `.github/workflows/ci.yml`: `actions/checkout@v4` and `astral-sh/setup-uv@v6` (MIT); they run in CI and are not part of the repository.",
+        "GitHub Actions used by `.github/workflows/ci.yml`: `actions/checkout@v7.0.1` and `astral-sh/setup-uv@v10.3.0` (MIT); they run in CI and are not part of the repository.",
     ]), after_heading="## Container images")
 
     update_file(ENV, "hosted-model", "\n".join([
