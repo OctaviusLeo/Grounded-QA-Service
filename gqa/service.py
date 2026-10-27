@@ -46,7 +46,8 @@ MAX_QUERY_LEN = 1000  # default; the service uses config service.max_query_len
 def request_model(max_len: int = MAX_QUERY_LEN) -> type[BaseModel]:
     class AnswerRequest(BaseModel):
         model_config = ConfigDict(strict=True, extra="forbid")
-        query: str = Field(min_length=1, max_length=max_len)
+        query: str = Field(min_length=1, max_length=max_len,
+                           description=f"The question: a non-blank string of at most {max_len} characters.")
 
         @field_validator("query")
         @classmethod
@@ -62,10 +63,29 @@ AnswerRequest = request_model()
 
 
 class CitedAnswer(BaseModel):
-    text: str
-    cited_ids: list[str]
+    text: str = Field(description="The answer, every sentence citing a retrieved passage, or the refusal text.")
+    cited_ids: list[str] = Field(description="IDs of the retrieved passages the answer cites (`doc:chunk:sha1-prefix`).")
+    request_id: str = Field(description="The same value as the `X-Request-ID` response header.")
+    refused: bool = Field(description="True when the service refused instead of answering.")
+
+
+class InvalidQueryError(BaseModel):
+    """Body of a 422 response: the query was rejected before the pipeline ran."""
+
+    error: str = Field(description='Always "invalid query".')
+    detail: list[dict[str, Any]] = Field(description="Each validation failure, as its location and message.")
     request_id: str
-    refused: bool
+
+
+class ModelServerErrorBody(BaseModel):
+    """Body of a 502 response from ``POST /answer``: the model server failed."""
+
+    error: str = Field(description='Always "model server error".')
+    detail: str
+    request_id: str
+
+
+_INVALID = {422: {"model": InvalidQueryError, "description": "Invalid query; the pipeline did not run."}}
 
 
 class Logger:
@@ -182,17 +202,19 @@ def create_app(cfg: Config | None = None, pipeline_factory: Callable[[Config], A
     def pipeline() -> AnsweringPipeline:
         return state["pipeline"]
 
-    @app.get("/health")
+    @app.get("/health", summary="Readiness: ok once the index and model client are loaded",
+             responses={503: {"description": 'Still starting: `{"status": "starting"}`.'}})
     def health():
         if state["pipeline"] is None:
             return JSONResponse(status_code=503, content={"status": "starting"})
         return {"status": "ok", "mode": cfg.service_mode, "model": cfg.service_model}
 
-    @app.get("/metrics")
+    @app.get("/metrics", summary="Request counts and latency per answering endpoint")
     def get_metrics():
         return metrics.snapshot()
 
-    @app.post("/answer", response_model=CitedAnswer)
+    @app.post("/answer", response_model=CitedAnswer, summary="Answer from retrieved passages, with citations, or refuse",
+              responses={**_INVALID, 502: {"model": ModelServerErrorBody, "description": "The model server failed."}})
     def answer(body: Query, request: Request):  # type: ignore[valid-type]
         rid = request.state.request_id
         try:
@@ -207,7 +229,10 @@ def create_app(cfg: Config | None = None, pipeline_factory: Callable[[Config], A
         request.state.outcome = "refused" if trace.answer.refused else "answered"
         return CitedAnswer(text=trace.answer.text, cited_ids=list(trace.answer.cited_ids), request_id=rid, refused=trace.answer.refused)
 
-    @app.post("/answer/stream")
+    @app.post("/answer/stream", response_class=StreamingResponse, summary="Stream validated sentences as server-sent events",
+              responses={**_INVALID, 200: {"content": {"text/event-stream": {"schema": {"type": "string"}}},
+                                           "description": "`chunk` events, one validated sentence each, then one `done` event "
+                                                          "with the full answer; or one `error` event."}})
     def answer_stream(body: Query, request: Request):  # type: ignore[valid-type]
         rid = request.state.request_id
         timeout = cfg.first_chunk_timeout_s

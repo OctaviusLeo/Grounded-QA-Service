@@ -144,6 +144,19 @@ def test_health_before_startup_and_helpers():
     assert Metrics().snapshot() == {"requests_total": 0, "by_endpoint": {}, "by_outcome": {}, "latency_ms": {"count": 0}}
 
 
+def test_openapi_matches_the_error_bodies_and_the_event_stream():
+    with TestClient(_app()) as client:
+        spec = client.get("/openapi.json").json()
+        invalid = client.post("/answer", json={"query": ""}).json()
+    answer = spec["paths"]["/answer"]["post"]["responses"]
+    assert answer["422"]["content"]["application/json"]["schema"]["$ref"].endswith("/InvalidQueryError")
+    assert answer["502"]["content"]["application/json"]["schema"]["$ref"].endswith("/ModelServerErrorBody")
+    assert set(invalid) == set(spec["components"]["schemas"]["InvalidQueryError"]["properties"])
+    stream = spec["paths"]["/answer/stream"]["post"]["responses"]
+    assert list(stream["200"]["content"]) == ["text/event-stream"]
+    assert "503" in spec["paths"]["/health"]["get"]["responses"]
+
+
 def test_metrics_latency_memory_is_bounded():
     m = Metrics(window=3)
     for ms in (100.0, 1.0, 2.0, 3.0):
